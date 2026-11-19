@@ -1,0 +1,44 @@
+{
+    "@@locale": "en",
+    "appTitle": "Evolo",
+    "@appTitle": {
+        "description": "App name (task switcher / OS label)."
+    },
+    "homeTitle": "Today",
+    "@homeTitle": {
+        "description": "Temporary Home title, replaced by the real Today screen in S6."
+    },
+    "homePlaceholder": "Your habits will show up here.",
+    "@homePlaceholder": {
+        "description": "Temporary Home body text."
+    },
+    "openThemeShowcase": "Open Theme Showcase",
+    "@openThemeShowcase": {
+        "description": "Dev-only button."
+    },
+    "switchLanguage": "Switch language",
+    "@switchLanguage": {
+        "description": "Tooltip/label for the language toggle."
+    },
+    "dayCount": "{count, plural, =0{No days} one{{count} day} other{{count} days}}",
+    "@dayCount": {
+        "description": "Number of days (streak length, frequency...).",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pageNotFoundTitle": "Page not found",
+    "@pageNotFoundTitle": {
+        "description": "Title of the route error screen."
+    },
+    "pageNotFoundMessage": "This page doesn't exist or was moved.",
+    "@pageNotFoundMessage": {
+        "description": "Body of the route error screen."
+    },
+    "goHome": "Go home",
+    "@goHome": {
+        "description": "Button on the route error screen."
+    }
+}

@@ -11,6 +11,7 @@ analyzer:
     - "lib/core/l10n/generated/**"
     - build/**
     - android/**
+    - lib/core/l10n/gen/**
 
 linter:
   rules:

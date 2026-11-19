@@ -1,0 +1,12 @@
+{
+    "@@locale": "ar",
+    "appTitle": "Evolo",
+    "homeTitle": "اليوم",
+    "homePlaceholder": "ستظهر عاداتك هنا.",
+    "openThemeShowcase": "فتح معرض الثيم",
+    "switchLanguage": "تغيير اللغة",
+    "dayCount": "{count, plural, =0{لا أيام} =1{يوم واحد} =2{يومان} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+    "pageNotFoundTitle": "الصفحة غير موجودة",
+    "pageNotFoundMessage": "هذه الصفحة غير موجودة أو تم نقلها.",
+    "goHome": "العودة للرئيسية"
+}
