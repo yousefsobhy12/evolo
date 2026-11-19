@@ -1,6 +1,7 @@
 import 'package:evolo/core/extensions/extensions.dart';
 import 'package:evolo/core/theme/app_radius.dart';
 import 'package:evolo/core/theme/app_spacing.dart';
+import 'package:evolo/core/widgets/max_content_width.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// TEMPORARY (S2): visual check for tokens. Strings are hard-coded on purpose;
@@ -35,57 +36,59 @@ class ThemeShowcasePage extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: AppSpacing.screen,
-          vertical: AppSpacing.s16,
+      body: MaxContentWidth(
+        child: ListView(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.screen,
+            vertical: AppSpacing.s16,
+          ),
+          children: [
+            _Section(
+              title: 'Typography',
+              child: _TypographyBlock(isArabic: isArabic),
+            ),
+            const _Section(title: 'Colors', child: _ColorsBlock()),
+            const _Section(title: 'Contrast pairs', child: _ContrastBlock()),
+            const _Section(title: 'Spacing', child: _SpacingBlock()),
+            const _Section(title: 'Radius', child: _RadiusBlock()),
+            _Section(
+              title: 'Buttons',
+              child: Column(
+                children: [
+                  FilledButton(
+                    onPressed: () {},
+                    child: Text(isArabic ? 'حفظ' : 'Save'),
+                  ).fullWidth(),
+                  12.vSpace,
+                  FilledButton(
+                    onPressed: null,
+                    child: Text(isArabic ? 'غير متاح' : 'Disabled'),
+                  ).fullWidth(),
+                ],
+              ),
+            ),
+            _Section(
+              title: 'Inputs',
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: isArabic ? 'اسم العادة' : 'Habit name',
+                      hintText: isArabic ? 'مثال: قراءة' : 'e.g. Reading',
+                    ),
+                  ),
+                  12.vSpace,
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: isArabic ? 'الهدف' : 'Goal',
+                      errorText: isArabic ? 'الحقل مطلوب' : 'Required field',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        children: [
-          _Section(
-            title: 'Typography',
-            child: _TypographyBlock(isArabic: isArabic),
-          ),
-          const _Section(title: 'Colors', child: _ColorsBlock()),
-          const _Section(title: 'Contrast pairs', child: _ContrastBlock()),
-          const _Section(title: 'Spacing', child: _SpacingBlock()),
-          const _Section(title: 'Radius', child: _RadiusBlock()),
-          _Section(
-            title: 'Buttons',
-            child: Column(
-              children: [
-                FilledButton(
-                  onPressed: () {},
-                  child: Text(isArabic ? 'حفظ' : 'Save'),
-                ).fullWidth(),
-                12.vSpace,
-                FilledButton(
-                  onPressed: null,
-                  child: Text(isArabic ? 'غير متاح' : 'Disabled'),
-                ).fullWidth(),
-              ],
-            ),
-          ),
-          _Section(
-            title: 'Inputs',
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: isArabic ? 'اسم العادة' : 'Habit name',
-                    hintText: isArabic ? 'مثال: قراءة' : 'e.g. Reading',
-                  ),
-                ),
-                12.vSpace,
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: isArabic ? 'الهدف' : 'Goal',
-                    errorText: isArabic ? 'الحقل مطلوب' : 'Required field',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
