@@ -13,7 +13,7 @@ class Habit extends Equatable {
     required this.schedule,
     required this.createdAt,
   });
-  
+
   static const int maxNameLength = 50;
 
   /// Returns why the fields are invalid, or null when they are fine.

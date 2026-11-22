@@ -8,8 +8,7 @@ const _darkSurface = Color(0xFF2A1E19);
 
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
-  const new
-  ({
+  const new({
     required this.background,
     required this.surface,
     required this.surfaceMuted,
