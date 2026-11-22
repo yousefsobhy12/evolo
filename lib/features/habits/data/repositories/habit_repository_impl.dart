@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:evolo/core/database/app_database.dart';
 import 'package:evolo/core/errors/failure.dart';
+import 'package:evolo/core/errors/guard.dart';
 import 'package:evolo/features/habits/data/datasources/habits_dao.dart';
 import 'package:evolo/features/habits/data/mappers/habit_mapper.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
@@ -22,16 +21,8 @@ class HabitRepositoryImpl implements HabitRepository {
 
   @override
   Stream<Either<Failure, List<Habit>>> watchHabits() {
-    return _dao.watchAll().transform(
-      StreamTransformer<
-        List<HabitRow>,
-        Either<Failure, List<Habit>>
-      >.fromHandlers(
-        handleData: (rows, sink) =>
-            sink.add(Right(rows.map((row) => row.toEntity()).toList())),
-        handleError: (error, _, sink) =>
-            sink.add(Left(DatabaseFailure(cause: error))),
-      ),
+    return _dao.watchAll().mapToEither(
+      (rows) => [for (final row in rows) row.toEntity()],
     );
   }
 

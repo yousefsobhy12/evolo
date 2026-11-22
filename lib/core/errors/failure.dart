@@ -2,7 +2,13 @@ import 'package:equatable/equatable.dart';
 
 /// Why a [ValidationFailure] happened. The UI maps each reason to a
 /// localized message, so no user-facing text lives in the domain.
-enum ValidationReason { nameEmpty, nameTooLong, invalidTarget, noDaysSelected }
+enum ValidationReason {
+  nameEmpty,
+  nameTooLong,
+  invalidTarget,
+  noDaysSelected,
+  negativeCount,
+}
 
 /// Every error the domain can report. `sealed` makes `switch` exhaustive,
 /// so adding a new Failure forces the UI mapping to be updated.
