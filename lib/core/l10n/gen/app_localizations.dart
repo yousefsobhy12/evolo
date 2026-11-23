@@ -151,6 +151,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go home'**
   String get goHome;
+
+  /// Title of the Today screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get todayTitle;
+
+  /// Section heading above the list of habits on the Today screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily routine'**
+  String get todayDailyRoutine;
+
+  /// Tooltip and screen-reader label of the button that shows the week before.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous week'**
+  String get previousWeek;
+
+  /// Tooltip and screen-reader label of the button that shows the week after.
+  ///
+  /// In en, this message translates to:
+  /// **'Next week'**
+  String get nextWeek;
+
+  /// Button that returns the Today screen to the current day.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to today'**
+  String get backToToday;
+
+  /// A habit's current streak, shown under its name. The count is at least 1.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Streak: 1 day} other{Streak: {count} days}}'**
+  String streakCurrent(int count);
+
+  /// Shown under a habit that has no streak yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your streak today'**
+  String get streakStart;
+
+  /// Short warning next to the streak: today is not done yet and the streak would break if the day ended now.
+  ///
+  /// In en, this message translates to:
+  /// **'At risk'**
+  String get streakAtRisk;
+
+  /// Screen-reader label for the freeze badge. A streak freeze covers one missed day automatically so the streak does not break.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 streak freeze available} other{{count} streak freezes available}}'**
+  String streakFreezesAvailable(int count);
+
+  /// Screen-reader label of the progress of a habit with a daily goal above 1, for example 3 of 8 glasses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {target} done'**
+  String habitProgressSemantics(int count, int target);
+
+  /// Tooltip and screen-reader label of the check circle of a habit that is not done.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete {name}'**
+  String completeHabit(String name);
+
+  /// Tooltip and screen-reader label of the check circle of a habit that is done.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo {name}'**
+  String undoHabit(String name);
+
+  /// Tooltip and label of the button that adds one to a habit's count for the day.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one'**
+  String get addOne;
+
+  /// Tooltip and screen-reader label of the + button of a habit with a daily goal above 1, for example "Add one to Drink water".
+  ///
+  /// In en, this message translates to:
+  /// **'Add one to {name}'**
+  String addOneTo(String name);
+
+  /// Tooltip and label of the button that removes one from a habit's count for the day.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove one'**
+  String get removeOne;
+
+  /// Tooltip and label of the floating button that opens the new-habit form.
+  ///
+  /// In en, this message translates to:
+  /// **'Add habit'**
+  String get addHabit;
+
+  /// Empty state title when no habit exists yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first habit'**
+  String get emptyNoHabitsTitle;
+
+  /// Empty state message when no habit exists yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Small steps every day add up. Create a habit and build your streak.'**
+  String get emptyNoHabitsMessage;
+
+  /// Button of the empty state when no habit exists yet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a habit'**
+  String get emptyNoHabitsAction;
+
+  /// Empty state title when habits exist but none is scheduled for the selected day.
+  ///
+  /// In en, this message translates to:
+  /// **'A rest day'**
+  String get emptyNothingDueTitle;
+
+  /// Empty state message when habits exist but none is scheduled for the selected day.
+  ///
+  /// In en, this message translates to:
+  /// **'No habits are scheduled for this day.'**
+  String get emptyNothingDueMessage;
+
+  /// Error state title of the Today screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your habits'**
+  String get loadErrorTitle;
+
+  /// Error state message of the Today screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while reading your data. Please try again.'**
+  String get loadErrorMessage;
+
+  /// Button that retries a failed load.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// SnackBar shown when marking a habit done (or undoing it) fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save that change. Please try again.'**
+  String get actionErrorMessage;
+
+  /// Screen-reader label of a loading indicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get loading;
+
+  /// Title of the reminder card (shown on Today from S10 when no reminder is set).
+  ///
+  /// In en, this message translates to:
+  /// **'Never miss a habit'**
+  String get reminderCardTitle;
+
+  /// Message of the reminder card.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time and we\'ll remind you gently.'**
+  String get reminderCardMessage;
+
+  /// Button of the reminder card that opens the reminder setup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set now'**
+  String get reminderCardAction;
 }
 
 class _AppLocalizationsDelegate

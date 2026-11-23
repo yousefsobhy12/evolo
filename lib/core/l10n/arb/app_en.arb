@@ -40,5 +40,154 @@
     "goHome": "Go home",
     "@goHome": {
         "description": "Button on the route error screen."
+    },
+    "todayTitle": "Today",
+    "@todayTitle": {
+        "description": "Title of the Today screen."
+    },
+    "todayDailyRoutine": "Daily routine",
+    "@todayDailyRoutine": {
+        "description": "Section heading above the list of habits on the Today screen."
+    },
+    "previousWeek": "Previous week",
+    "@previousWeek": {
+        "description": "Tooltip and screen-reader label of the button that shows the week before."
+    },
+    "nextWeek": "Next week",
+    "@nextWeek": {
+        "description": "Tooltip and screen-reader label of the button that shows the week after."
+    },
+    "backToToday": "Back to today",
+    "@backToToday": {
+        "description": "Button that returns the Today screen to the current day."
+    },
+    "streakCurrent": "{count, plural, =1{Streak: 1 day} other{Streak: {count} days}}",
+    "@streakCurrent": {
+        "description": "A habit's current streak, shown under its name. The count is at least 1.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "streakStart": "Start your streak today",
+    "@streakStart": {
+        "description": "Shown under a habit that has no streak yet."
+    },
+    "streakAtRisk": "At risk",
+    "@streakAtRisk": {
+        "description": "Short warning next to the streak: today is not done yet and the streak would break if the day ended now."
+    },
+    "streakFreezesAvailable": "{count, plural, =1{1 streak freeze available} other{{count} streak freezes available}}",
+    "@streakFreezesAvailable": {
+        "description": "Screen-reader label for the freeze badge. A streak freeze covers one missed day automatically so the streak does not break.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "habitProgressSemantics": "{count} of {target} done",
+    "@habitProgressSemantics": {
+        "description": "Screen-reader label of the progress of a habit with a daily goal above 1, for example 3 of 8 glasses.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "completeHabit": "Complete {name}",
+    "@completeHabit": {
+        "description": "Tooltip and screen-reader label of the check circle of a habit that is not done.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "undoHabit": "Undo {name}",
+    "@undoHabit": {
+        "description": "Tooltip and screen-reader label of the check circle of a habit that is done.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "addOne": "Add one",
+    "@addOne": {
+        "description": "Tooltip and label of the button that adds one to a habit's count for the day."
+    },
+    "addOneTo": "Add one to {name}",
+    "@addOneTo": {
+        "description": "Tooltip and screen-reader label of the + button of a habit with a daily goal above 1, for example \"Add one to Drink water\".",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "removeOne": "Remove one",
+    "@removeOne": {
+        "description": "Tooltip and label of the button that removes one from a habit's count for the day."
+    },
+    "addHabit": "Add habit",
+    "@addHabit": {
+        "description": "Tooltip and label of the floating button that opens the new-habit form."
+    },
+    "emptyNoHabitsTitle": "Start your first habit",
+    "@emptyNoHabitsTitle": {
+        "description": "Empty state title when no habit exists yet."
+    },
+    "emptyNoHabitsMessage": "Small steps every day add up. Create a habit and build your streak.",
+    "@emptyNoHabitsMessage": {
+        "description": "Empty state message when no habit exists yet."
+    },
+    "emptyNoHabitsAction": "Add a habit",
+    "@emptyNoHabitsAction": {
+        "description": "Button of the empty state when no habit exists yet."
+    },
+    "emptyNothingDueTitle": "A rest day",
+    "@emptyNothingDueTitle": {
+        "description": "Empty state title when habits exist but none is scheduled for the selected day."
+    },
+    "emptyNothingDueMessage": "No habits are scheduled for this day.",
+    "@emptyNothingDueMessage": {
+        "description": "Empty state message when habits exist but none is scheduled for the selected day."
+    },
+    "loadErrorTitle": "Couldn't load your habits",
+    "@loadErrorTitle": {
+        "description": "Error state title of the Today screen."
+    },
+    "loadErrorMessage": "Something went wrong while reading your data. Please try again.",
+    "@loadErrorMessage": {
+        "description": "Error state message of the Today screen."
+    },
+    "retry": "Try again",
+    "@retry": {
+        "description": "Button that retries a failed load."
+    },
+    "actionErrorMessage": "Couldn't save that change. Please try again.",
+    "@actionErrorMessage": {
+        "description": "SnackBar shown when marking a habit done (or undoing it) fails."
+    },
+    "loading": "Loading",
+    "@loading": {
+        "description": "Screen-reader label of a loading indicator."
+    },
+    "reminderCardTitle": "Never miss a habit",
+    "@reminderCardTitle": {
+        "description": "Title of the reminder card (shown on Today from S10 when no reminder is set)."
+    },
+    "reminderCardMessage": "Pick a time and we'll remind you gently.",
+    "@reminderCardMessage": {
+        "description": "Message of the reminder card."
+    },
+    "reminderCardAction": "Set now",
+    "@reminderCardAction": {
+        "description": "Button of the reminder card that opens the reminder setup."
     }
 }

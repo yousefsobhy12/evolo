@@ -47,6 +47,16 @@ class AppFormatters {
   String time(DateTime date) =>
       digits(DateFormat.jm(locale.languageCode).format(date));
 
+  /// One-letter weekday for the day strip (Arabic: ح ن ث ر خ ج س).
+  /// Several English days share a letter (S, T), so the strip also shows the
+  /// day number and its screen-reader label uses [fullDate].
+  String weekdayNarrow(DateTime date) =>
+      DateFormat.EEEEE(locale.languageCode).format(date);
+
+  /// Weekday, month and day: "Sunday, November 22".
+  String fullDate(DateTime date) =>
+      digits(DateFormat.MMMMEEEEd(locale.languageCode).format(date));
+
   /// Converts every digit in [input] to the active digit set.
   ///
   /// Only for app-generated strings. Never pass user-entered text
