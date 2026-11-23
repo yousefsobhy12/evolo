@@ -1,16 +1,51 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:evolo/app.dart';
 import 'package:evolo/core/di/injection.dart';
 import 'package:evolo/core/router/route_error_page.dart';
-import 'package:evolo/dev/home_page.dart';
+import 'package:evolo/core/utils/calendar_day.dart';
+import 'package:evolo/dev/new_habit_placeholder_page.dart';
 import 'package:evolo/dev/theme_showcase_page.dart';
+import 'package:evolo/features/habits/domain/entities/habit_schedule.dart';
+import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
+import 'package:evolo/features/habits/presentation/cubit/today_state.dart';
+import 'package:evolo/features/habits/presentation/pages/today_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
 
+class MockTodayCubit extends MockCubit<TodayState> implements TodayCubit;
+
+/// The shell of the app: language, direction, routes. The Today page's own
+/// behavior is covered in `today_page_test.dart`; here it gets a fake cubit so
+/// no real database is opened.
 void main() {
+  setUpAll(() async {
+    await initializeDateFormatting('ar');
+    await initializeDateFormatting('en');
+  });
+
   setUp(() async {
     await getIt.reset();
     await configureDependencies();
+    // Same registration as production, but the cubit is a stub that shows the
+    // "no habits" state (it has no endless spinner, so pumpAndSettle ends).
+    await getIt.unregister<TodayCubit>();
+    getIt.registerFactory<TodayCubit>(() {
+      final today = CalendarDay.fromDateTime(DateTime.now());
+      final cubit = MockTodayCubit();
+      whenListen(
+        cubit,
+        const Stream<TodayState>.empty(),
+        initialState: TodayState(
+          today: today,
+          selectedDay: today,
+          weekStart: Weekday.saturday,
+          status: TodayStatus.success,
+        ),
+      );
+      return cubit;
+    });
   });
 
   tearDown(getIt.reset);
@@ -25,10 +60,15 @@ void main() {
   TextDirection direction(WidgetTester tester) =>
       Directionality.of(tester.element(find.byType(Scaffold)));
 
-  testWidgets('starts on Home in Arabic (RTL)', (tester) async {
+  Future<void> openDevMenu(WidgetTester tester) async {
+    await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('starts on Today in Arabic (RTL)', (tester) async {
     await pumpApp(tester);
 
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
     expect(find.text('اليوم'), findsOneWidget);
     expect(direction(tester), TextDirection.rtl);
   });
@@ -36,7 +76,8 @@ void main() {
   testWidgets('language toggle flips direction and text', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.byIcon(Icons.translate));
+    await openDevMenu(tester);
+    await tester.tap(find.text('Switch language'));
     await tester.pumpAndSettle();
 
     expect(find.text('Today'), findsOneWidget);
@@ -46,13 +87,28 @@ void main() {
   testWidgets('opens Theme Showcase and comes back', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('فتح معرض الثيم'));
+    await openDevMenu(tester);
+    await tester.tap(find.text('Theme showcase'));
     await tester.pumpAndSettle();
     expect(find.byType(ThemeShowcasePage), findsOneWidget);
 
     getIt<GoRouter>().pop();
     await tester.pumpAndSettle();
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
+  });
+
+  testWidgets('the FAB opens the new-habit screen and back returns', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(NewHabitPlaceholderPage), findsOneWidget);
+
+    getIt<GoRouter>().pop();
+    await tester.pumpAndSettle();
+    expect(find.byType(TodayPage), findsOneWidget);
   });
 
   testWidgets('unknown route shows localized error page', (tester) async {
@@ -65,6 +121,6 @@ void main() {
 
     await tester.tap(find.text('العودة للرئيسية'));
     await tester.pumpAndSettle();
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(TodayPage), findsOneWidget);
   });
 }

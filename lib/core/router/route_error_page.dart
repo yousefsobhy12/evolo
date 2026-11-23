@@ -37,7 +37,7 @@ class RouteErrorPage extends StatelessWidget {
               ),
               AppSpacing.s24.vSpace,
               FilledButton(
-                onPressed: () => context.go(AppRoutes.home),
+                onPressed: () => context.go(AppRoutes.today),
                 child: Text(context.l10n.goHome),
               ),
             ],

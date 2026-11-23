@@ -1,4 +1,5 @@
 abstract final class AppRoutes {
-  static const home = '/';
+  static const today = '/';
+  static const newHabit = '/habits/new';
   static const themeShowcase = '/dev/theme-showcase';
 }

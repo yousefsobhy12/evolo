@@ -4,7 +4,9 @@ import 'package:evolo/features/habits/data/repositories/habit_repository_impl.da
 import 'package:evolo/features/habits/domain/repositories/completion_repository.dart';
 import 'package:evolo/features/habits/domain/repositories/habit_repository.dart';
 import 'package:evolo/features/habits/domain/usecases/get_streak_status.dart';
+import 'package:evolo/features/habits/domain/usecases/get_today_items.dart';
 import 'package:evolo/features/habits/domain/usecases/is_habit_due.dart';
+import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 /// Registers everything the habits feature needs.
@@ -20,5 +22,19 @@ void registerHabitsFeature(GetIt getIt) {
     ..registerLazySingleton<IsHabitDue>(IsHabitDue.new)
     ..registerLazySingleton<GetStreakStatus>(
       () => GetStreakStatus(isHabitDue: getIt<IsHabitDue>()),
+    )
+    ..registerLazySingleton<GetTodayItems>(
+      () => GetTodayItems(
+        isHabitDue: getIt<IsHabitDue>(),
+        getStreakStatus: getIt<GetStreakStatus>(),
+      ),
+    )
+    // A screen Cubit: every screen instance gets its own (and closes it).
+    ..registerFactory<TodayCubit>(
+      () => TodayCubit(
+        getIt<HabitRepository>(),
+        getIt<CompletionRepository>(),
+        getIt<GetTodayItems>(),
+      ),
     );
 }

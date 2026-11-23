@@ -9,7 +9,10 @@ import 'package:evolo/features/habits/domain/entities/habit_schedule.dart';
 import 'package:evolo/features/habits/domain/repositories/completion_repository.dart';
 import 'package:evolo/features/habits/domain/repositories/habit_repository.dart';
 import 'package:evolo/features/habits/domain/usecases/get_streak_status.dart';
+import 'package:evolo/features/habits/domain/usecases/get_today_items.dart';
 import 'package:evolo/features/habits/habits_injection.dart';
+import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
+import 'package:evolo/features/habits/presentation/cubit/today_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 
@@ -38,9 +41,10 @@ void main() {
     expect(first.getOrElse((_) => fail('expected Right')), isEmpty);
   });
 
-  test('resolves the completion repository and both usecases', () {
+  test('resolves the completion repository and the usecases', () {
     expect(getIt<CompletionRepository>(), isA<CompletionRepositoryImpl>());
     expect(getIt<GetStreakStatus>(), isNotNull);
+    expect(getIt<GetTodayItems>(), isNotNull);
   });
 
   test('the pieces work together: create, complete, read the streak', () async {
@@ -69,5 +73,46 @@ void main() {
 
     expect(streak.current, 1);
     expect(streak.isTodayAtRisk, isFalse);
+  });
+
+  test('TodayCubit is a factory: every resolve is a new instance', () {
+    final first = getIt<TodayCubit>();
+    final second = getIt<TodayCubit>();
+    addTearDown(first.close);
+    addTearDown(second.close);
+
+    expect(first, isNot(same(second)));
+  });
+
+  test('TodayCubit works end to end on the real repositories', () async {
+    await getIt<HabitRepository>().createHabit(
+      name: 'Read',
+      iconKey: 'book',
+      color: HabitColor.orange,
+      dailyTarget: 1,
+      schedule: HabitSchedule.everyDay(),
+    );
+    final cubit = getIt<TodayCubit>();
+    addTearDown(cubit.close);
+
+    Future<TodayState> waitFor(bool Function(TodayState) condition) async {
+      if (condition(cubit.state)) return cubit.state;
+      return await cubit.stream
+          .firstWhere(condition)
+          .timeout(const Duration(seconds: 5));
+    }
+
+    final loaded = await waitFor((s) => s.status == TodayStatus.success);
+    expect(loaded.items.single.count, 0);
+    expect(loaded.items.single.isCompleted, isFalse);
+
+    await cubit.tapCheck(loaded.items.single);
+
+    final done = await waitFor(
+      (s) => s.items.isNotEmpty && s.items.single.isCompleted,
+    );
+    expect(done.items.single.count, 1);
+    expect(done.items.single.streak.current, 1);
+    expect(done.items.single.streak.isTodayAtRisk, isFalse);
   });
 }
