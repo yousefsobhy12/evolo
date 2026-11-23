@@ -226,6 +226,166 @@ void main() {
     );
   });
 
+  group('watchAll', () {
+    test('returns every habit, grouped by habit, oldest day first', () async {
+      final first = await createHabit();
+      final second = await createHabit();
+      await repository.setCount(habitId: second.id, day: day1, count: 1);
+      await repository.setCount(habitId: first.id, day: day2, count: 1);
+      await repository.setCount(habitId: first.id, day: day1, count: 1);
+
+      final stored = unwrap(await repository.watchAll().first);
+
+      expect(stored.map((c) => '${c.habitId} ${c.day}'), [
+        '${first.id} $day1',
+        '${first.id} $day2',
+        '${second.id} $day1',
+      ]);
+    });
+
+    test('is empty when nothing is stored', () async {
+      await createHabit();
+
+      expect(unwrap(await repository.watchAll().first), isEmpty);
+    });
+
+    test('emits again after an adjustment', () async {
+      final habit = await createHabit();
+      final emissions = <int>[];
+      final subscription = repository
+          .watchAll()
+          .map((result) => unwrap(result).length)
+          .listen(emissions.add);
+      addTearDown(subscription.cancel);
+      await pumpEvents();
+
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 1);
+      await pumpEvents();
+
+      expect(emissions.first, 0);
+      expect(emissions.last, 1);
+    });
+
+    test('reports a corrupt day as a Left value, not a stream error', () async {
+      final habit = await createHabit();
+      await db.customStatement(
+        'INSERT INTO completions (habit_id, day, count, target) '
+        "VALUES ('${habit.id}', 'garbage', 1, 1)",
+      );
+
+      final first = await repository.watchAll().first;
+
+      expect(first, isA<Left<Failure, List<Completion>>>());
+    });
+  });
+
+  group('adjustCount', () {
+    test('creates the row with a snapshot of the habit target', () async {
+      final habit = await createHabit(dailyTarget: 3);
+
+      final result = await repository.adjustCount(
+        habitId: habit.id,
+        day: day1,
+        delta: 1,
+      );
+
+      expect(result, const Right<Failure, Unit>(unit));
+      expect(await completionsOf(habit.id), [
+        Completion(habitId: habit.id, day: day1, count: 1, target: 3),
+      ]);
+    });
+
+    test('adds to what is already stored', () async {
+      final habit = await createHabit(dailyTarget: 8);
+
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 1);
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+
+      expect((await completionsOf(habit.id)).single.count, 3);
+    });
+
+    test('subtracting back to zero removes the row', () async {
+      final habit = await createHabit(dailyTarget: 8);
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+
+      final result = await repository.adjustCount(
+        habitId: habit.id,
+        day: day1,
+        delta: -2,
+      );
+
+      expect(result, const Right<Failure, Unit>(unit));
+      expect(await completionsOf(habit.id), isEmpty);
+    });
+
+    test('never goes below zero and is not a failure', () async {
+      final habit = await createHabit(dailyTarget: 8);
+
+      final onEmptyDay = await repository.adjustCount(
+        habitId: habit.id,
+        day: day1,
+        delta: -1,
+      );
+      await repository.adjustCount(habitId: habit.id, day: day2, delta: 1);
+      final pastZero = await repository.adjustCount(
+        habitId: habit.id,
+        day: day2,
+        delta: -5,
+      );
+
+      expect(onEmptyDay, const Right<Failure, Unit>(unit));
+      expect(pastZero, const Right<Failure, Unit>(unit));
+      expect(await completionsOf(habit.id), isEmpty);
+    });
+
+    test(
+      'a delta of 0 changes nothing, not even the stored snapshot',
+      () async {
+        final habit = await createHabit(dailyTarget: 3);
+        await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+        await habits.updateHabit(habit.copyWith(dailyTarget: 5));
+
+        await repository.adjustCount(habitId: habit.id, day: day1, delta: 0);
+
+        expect((await completionsOf(habit.id)).single.target, 3);
+      },
+    );
+
+    test('re-snapshots the target when the count changes', () async {
+      final habit = await createHabit(dailyTarget: 3);
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+      await habits.updateHabit(habit.copyWith(dailyTarget: 5));
+
+      await repository.adjustCount(habitId: habit.id, day: day1, delta: 1);
+
+      final stored = (await completionsOf(habit.id)).single;
+      expect(stored.count, 3);
+      expect(stored.target, 5);
+    });
+
+    test('quick taps are never lost', () async {
+      final habit = await createHabit(dailyTarget: 10);
+
+      await Future.wait([
+        for (var i = 0; i < 10; i++)
+          repository.adjustCount(habitId: habit.id, day: day1, delta: 1),
+      ]);
+
+      expect((await completionsOf(habit.id)).single.count, 10);
+    });
+
+    test('returns NotFoundFailure for an unknown habit', () async {
+      final result = await repository.adjustCount(
+        habitId: 'ghost',
+        day: day1,
+        delta: 1,
+      );
+
+      expect(result, const Left<Failure, Unit>(NotFoundFailure()));
+      expect(await db.select(db.completions).get(), isEmpty);
+    });
+  });
+
   group('deleting a habit', () {
     test('removes its completions and keeps the others', () async {
       final doomed = await createHabit();

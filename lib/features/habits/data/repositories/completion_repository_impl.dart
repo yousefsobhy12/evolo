@@ -24,6 +24,28 @@ class CompletionRepositoryImpl implements CompletionRepository {
   }
 
   @override
+  Stream<Either<Failure, List<Completion>>> watchAll() {
+    return _dao.watchAll().mapToEither(_toEntities);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> adjustCount({
+    required String habitId,
+    required CalendarDay day,
+    required int delta,
+  }) {
+    return guard<Unit>(() async {
+      final habitExists = await _dao.adjustCount(
+        habitId: habitId,
+        day: day,
+        delta: delta,
+      );
+      if (!habitExists) return const Left(NotFoundFailure());
+      return const Right(unit);
+    });
+  }
+
+  @override
   Future<Either<Failure, Unit>> setCount({
     required String habitId,
     required CalendarDay day,
