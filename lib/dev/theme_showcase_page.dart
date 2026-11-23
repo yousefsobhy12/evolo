@@ -1,7 +1,9 @@
 import 'package:evolo/core/extensions/extensions.dart';
+import 'package:evolo/core/l10n/l10n.dart';
 import 'package:evolo/core/theme/app_radius.dart';
 import 'package:evolo/core/theme/app_spacing.dart';
 import 'package:evolo/core/widgets/max_content_width.dart';
+import 'package:evolo/features/reminders/presentation/widgets/reminder_card.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// TEMPORARY (S2): visual check for tokens. Strings are hard-coded on purpose;
@@ -65,6 +67,15 @@ class ThemeShowcasePage extends StatelessWidget {
                     child: Text(isArabic ? 'غير متاح' : 'Disabled'),
                   ).fullWidth(),
                 ],
+              ),
+            ),
+            _Section(
+              title: 'Reminder card',
+              child: ReminderCard(
+                title: context.l10n.reminderCardTitle,
+                message: context.l10n.reminderCardMessage,
+                actionLabel: context.l10n.reminderCardAction,
+                onAction: () {},
               ),
             ),
             _Section(
