@@ -165,4 +165,242 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reminderCardAction => 'حدّد الآن';
+
+  @override
+  String get newHabitTitle => 'عادة جديدة';
+
+  @override
+  String get editHabitTitle => 'تعديل العادة';
+
+  @override
+  String get habitNameLabel => 'الاسم';
+
+  @override
+  String get habitNameHint => 'مثال: شرب الماء';
+
+  @override
+  String habitNameCounter(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
+  String get habitNameEmptyError => 'اكتب اسمًا للعادة';
+
+  @override
+  String habitNameTooLongError(int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      max,
+      locale: localeName,
+      other: 'الحد الأقصى $max حرف',
+      many: 'الحد الأقصى $max حرفًا',
+      few: 'الحد الأقصى $max أحرف',
+      two: 'الحد الأقصى حرفان',
+      one: 'الحد الأقصى حرف واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get habitIconLabel => 'الأيقونة';
+
+  @override
+  String get habitColorLabel => 'اللون';
+
+  @override
+  String get colorOrange => 'برتقالي';
+
+  @override
+  String get colorGreen => 'أخضر';
+
+  @override
+  String get colorPink => 'وردي';
+
+  @override
+  String get habitTargetLabel => 'الهدف اليومي';
+
+  @override
+  String habitTargetSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مرة في اليوم',
+      many: '$count مرة في اليوم',
+      few: '$count مرات في اليوم',
+      two: 'مرتان في اليوم',
+      one: 'مرة واحدة في اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get increaseTarget => 'زيادة الهدف';
+
+  @override
+  String get decreaseTarget => 'إنقاص الهدف';
+
+  @override
+  String get habitDaysLabel => 'التكرار';
+
+  @override
+  String get daysEveryDay => 'كل يوم';
+
+  @override
+  String get habitDaysError => 'اختر يومًا واحدًا على الأقل';
+
+  @override
+  String get scheduleChangeWarning =>
+      'تغيير الأيام يغيّر أيضًا طريقة احتساب الأيام السابقة في سلسلتك.';
+
+  @override
+  String get saveHabit => 'حفظ';
+
+  @override
+  String get savingHabit => 'جارٍ الحفظ';
+
+  @override
+  String get deleteHabit => 'حذف العادة';
+
+  @override
+  String deleteHabitTitle(String name) {
+    return 'حذف $name؟';
+  }
+
+  @override
+  String get deleteHabitMessage =>
+      'ستُحذف سلسلتها وكل سجلها نهائيًا، ولا يمكن التراجع عن ذلك.';
+
+  @override
+  String get deleteHabitConfirm => 'احذف';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get discardChangesTitle => 'تجاهل التغييرات؟';
+
+  @override
+  String get discardChangesMessage => 'لديك تغييرات غير محفوظة.';
+
+  @override
+  String get discardChangesConfirm => 'تجاهل';
+
+  @override
+  String get keepEditing => 'متابعة التعديل';
+
+  @override
+  String get habitAdded => 'تمت إضافة العادة';
+
+  @override
+  String get habitSaved => 'تم حفظ التغييرات';
+
+  @override
+  String get habitDeleted => 'تم حذف العادة';
+
+  @override
+  String get habitNotFoundTitle => 'هذه العادة لم تعد موجودة';
+
+  @override
+  String get habitNotFoundMessage => 'ربما تم حذفها.';
+
+  @override
+  String get goBack => 'رجوع';
+
+  @override
+  String get iconNameWater => 'ماء';
+
+  @override
+  String get iconNameRun => 'الجري';
+
+  @override
+  String get iconNameWalk => 'المشي';
+
+  @override
+  String get iconNameBike => 'ركوب الدراجة';
+
+  @override
+  String get iconNameWorkout => 'تمرين';
+
+  @override
+  String get iconNameSwim => 'السباحة';
+
+  @override
+  String get iconNameYoga => 'يوغا';
+
+  @override
+  String get iconNameBook => 'القراءة';
+
+  @override
+  String get iconNameQuran => 'القرآن';
+
+  @override
+  String get iconNamePray => 'الصلاة';
+
+  @override
+  String get iconNameWrite => 'الكتابة';
+
+  @override
+  String get iconNameStudy => 'الدراسة';
+
+  @override
+  String get iconNameCode => 'البرمجة';
+
+  @override
+  String get iconNameMusic => 'الموسيقى';
+
+  @override
+  String get iconNameArt => 'الفن';
+
+  @override
+  String get iconNameSleep => 'النوم';
+
+  @override
+  String get iconNameWake => 'الاستيقاظ';
+
+  @override
+  String get iconNameMeditate => 'التأمل';
+
+  @override
+  String get iconNameMeal => 'وجبة';
+
+  @override
+  String get iconNameCoffee => 'قهوة';
+
+  @override
+  String get iconNameFruit => 'أكل صحي';
+
+  @override
+  String get iconNameMedicine => 'دواء';
+
+  @override
+  String get iconNameSavings => 'ادخار';
+
+  @override
+  String get iconNameClean => 'التنظيف';
+
+  @override
+  String get iconNamePet => 'حيوان أليف';
+
+  @override
+  String get iconNameNature => 'الطبيعة';
+
+  @override
+  String get iconNamePhone => 'الهاتف';
+
+  @override
+  String get iconNameNoSmoking => 'الإقلاع عن التدخين';
+
+  @override
+  String get iconNameHeart => 'قلب';
+
+  @override
+  String get iconNameStar => 'نجمة';
+
+  @override
+  String get iconNameLanguage => 'لغة';
+
+  @override
+  String get iconNameFamily => 'العائلة';
+
+  @override
+  String get iconNameCall => 'اتصال';
 }

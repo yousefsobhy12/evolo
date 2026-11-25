@@ -158,4 +158,237 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderCardAction => 'Set now';
+
+  @override
+  String get newHabitTitle => 'New habit';
+
+  @override
+  String get editHabitTitle => 'Edit habit';
+
+  @override
+  String get habitNameLabel => 'Name';
+
+  @override
+  String get habitNameHint => 'e.g. Drink water';
+
+  @override
+  String habitNameCounter(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
+  String get habitNameEmptyError => 'Give your habit a name';
+
+  @override
+  String habitNameTooLongError(int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      max,
+      locale: localeName,
+      other: 'Up to $max characters',
+      one: 'Up to 1 character',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get habitIconLabel => 'Icon';
+
+  @override
+  String get habitColorLabel => 'Color';
+
+  @override
+  String get colorOrange => 'Orange';
+
+  @override
+  String get colorGreen => 'Green';
+
+  @override
+  String get colorPink => 'Pink';
+
+  @override
+  String get habitTargetLabel => 'Daily goal';
+
+  @override
+  String habitTargetSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times a day',
+      two: 'Twice a day',
+      one: 'Once a day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get increaseTarget => 'Increase goal';
+
+  @override
+  String get decreaseTarget => 'Decrease goal';
+
+  @override
+  String get habitDaysLabel => 'Repeat';
+
+  @override
+  String get daysEveryDay => 'Every day';
+
+  @override
+  String get habitDaysError => 'Pick at least one day';
+
+  @override
+  String get scheduleChangeWarning =>
+      'Changing the days also changes how past days count toward your streak.';
+
+  @override
+  String get saveHabit => 'Save';
+
+  @override
+  String get savingHabit => 'Saving';
+
+  @override
+  String get deleteHabit => 'Delete habit';
+
+  @override
+  String deleteHabitTitle(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get deleteHabitMessage =>
+      'Its streak and all its history will be deleted. This can\'t be undone.';
+
+  @override
+  String get deleteHabitConfirm => 'Delete';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get discardChangesTitle => 'Discard changes?';
+
+  @override
+  String get discardChangesMessage => 'You have unsaved changes.';
+
+  @override
+  String get discardChangesConfirm => 'Discard';
+
+  @override
+  String get keepEditing => 'Keep editing';
+
+  @override
+  String get habitAdded => 'Habit added';
+
+  @override
+  String get habitSaved => 'Changes saved';
+
+  @override
+  String get habitDeleted => 'Habit deleted';
+
+  @override
+  String get habitNotFoundTitle => 'This habit is gone';
+
+  @override
+  String get habitNotFoundMessage => 'It may have been deleted.';
+
+  @override
+  String get goBack => 'Go back';
+
+  @override
+  String get iconNameWater => 'Water';
+
+  @override
+  String get iconNameRun => 'Running';
+
+  @override
+  String get iconNameWalk => 'Walking';
+
+  @override
+  String get iconNameBike => 'Cycling';
+
+  @override
+  String get iconNameWorkout => 'Workout';
+
+  @override
+  String get iconNameSwim => 'Swimming';
+
+  @override
+  String get iconNameYoga => 'Yoga';
+
+  @override
+  String get iconNameBook => 'Reading';
+
+  @override
+  String get iconNameQuran => 'Quran';
+
+  @override
+  String get iconNamePray => 'Prayer';
+
+  @override
+  String get iconNameWrite => 'Writing';
+
+  @override
+  String get iconNameStudy => 'Study';
+
+  @override
+  String get iconNameCode => 'Coding';
+
+  @override
+  String get iconNameMusic => 'Music';
+
+  @override
+  String get iconNameArt => 'Art';
+
+  @override
+  String get iconNameSleep => 'Sleep';
+
+  @override
+  String get iconNameWake => 'Wake up';
+
+  @override
+  String get iconNameMeditate => 'Meditation';
+
+  @override
+  String get iconNameMeal => 'Meal';
+
+  @override
+  String get iconNameCoffee => 'Coffee';
+
+  @override
+  String get iconNameFruit => 'Healthy eating';
+
+  @override
+  String get iconNameMedicine => 'Medicine';
+
+  @override
+  String get iconNameSavings => 'Savings';
+
+  @override
+  String get iconNameClean => 'Cleaning';
+
+  @override
+  String get iconNamePet => 'Pet';
+
+  @override
+  String get iconNameNature => 'Nature';
+
+  @override
+  String get iconNamePhone => 'Phone';
+
+  @override
+  String get iconNameNoSmoking => 'No smoking';
+
+  @override
+  String get iconNameHeart => 'Heart';
+
+  @override
+  String get iconNameStar => 'Star';
+
+  @override
+  String get iconNameLanguage => 'Language';
+
+  @override
+  String get iconNameFamily => 'Family';
+
+  @override
+  String get iconNameCall => 'Call';
 }

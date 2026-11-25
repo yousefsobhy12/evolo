@@ -189,5 +189,308 @@
     "reminderCardAction": "Set now",
     "@reminderCardAction": {
         "description": "Button of the reminder card that opens the reminder setup."
+    },
+    "newHabitTitle": "New habit",
+    "@newHabitTitle": {
+        "description": "Title of the add-habit screen."
+    },
+    "editHabitTitle": "Edit habit",
+    "@editHabitTitle": {
+        "description": "Title of the edit-habit screen."
+    },
+    "habitNameLabel": "Name",
+    "@habitNameLabel": {
+        "description": "Label of the habit name field."
+    },
+    "habitNameHint": "e.g. Drink water",
+    "@habitNameHint": {
+        "description": "Placeholder of the habit name field."
+    },
+    "habitNameCounter": "{count}/{max}",
+    "@habitNameCounter": {
+        "description": "Character counter under the habit name field, for example 12/50.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "habitNameEmptyError": "Give your habit a name",
+    "@habitNameEmptyError": {
+        "description": "Validation error when the habit name is empty."
+    },
+    "habitNameTooLongError": "{max, plural, =1{Up to 1 character} other{Up to {max} characters}}",
+    "@habitNameTooLongError": {
+        "description": "Validation error when the habit name is longer than the limit.",
+        "placeholders": {
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "habitIconLabel": "Icon",
+    "@habitIconLabel": {
+        "description": "Section label of the icon picker."
+    },
+    "habitColorLabel": "Color",
+    "@habitColorLabel": {
+        "description": "Section label of the color picker."
+    },
+    "colorOrange": "Orange",
+    "@colorOrange": {
+        "description": "Name of the orange habit color (screen readers)."
+    },
+    "colorGreen": "Green",
+    "@colorGreen": {
+        "description": "Name of the green habit color (screen readers)."
+    },
+    "colorPink": "Pink",
+    "@colorPink": {
+        "description": "Name of the pink habit color (screen readers)."
+    },
+    "habitTargetLabel": "Daily goal",
+    "@habitTargetLabel": {
+        "description": "Section label of the daily goal stepper."
+    },
+    "habitTargetSummary": "{count, plural, =1{Once a day} =2{Twice a day} other{{count} times a day}}",
+    "@habitTargetSummary": {
+        "description": "The daily goal as a phrase, shown between the - and + buttons.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "increaseTarget": "Increase goal",
+    "@increaseTarget": {
+        "description": "Tooltip and screen-reader label of the + button of the daily goal stepper."
+    },
+    "decreaseTarget": "Decrease goal",
+    "@decreaseTarget": {
+        "description": "Tooltip and screen-reader label of the - button of the daily goal stepper."
+    },
+    "habitDaysLabel": "Repeat",
+    "@habitDaysLabel": {
+        "description": "Section label of the weekday picker."
+    },
+    "daysEveryDay": "Every day",
+    "@daysEveryDay": {
+        "description": "Summary under the weekday picker when all seven days are selected."
+    },
+    "habitDaysError": "Pick at least one day",
+    "@habitDaysError": {
+        "description": "Validation error when no weekday is selected."
+    },
+    "scheduleChangeWarning": "Changing the days also changes how past days count toward your streak.",
+    "@scheduleChangeWarning": {
+        "description": "Notice shown when editing a habit's days: the new schedule applies to the whole history."
+    },
+    "saveHabit": "Save",
+    "@saveHabit": {
+        "description": "Button that saves the habit form."
+    },
+    "savingHabit": "Saving",
+    "@savingHabit": {
+        "description": "Screen-reader label of the save button while saving."
+    },
+    "deleteHabit": "Delete habit",
+    "@deleteHabit": {
+        "description": "Button on the edit screen that deletes the habit."
+    },
+    "deleteHabitTitle": "Delete {name}?",
+    "@deleteHabitTitle": {
+        "description": "Title of the delete confirmation dialog.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteHabitMessage": "Its streak and all its history will be deleted. This can't be undone.",
+    "@deleteHabitMessage": {
+        "description": "Body of the delete confirmation dialog."
+    },
+    "deleteHabitConfirm": "Delete",
+    "@deleteHabitConfirm": {
+        "description": "Confirm button of the delete dialog."
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Dialog button that dismisses it without doing anything."
+    },
+    "discardChangesTitle": "Discard changes?",
+    "@discardChangesTitle": {
+        "description": "Title of the dialog shown when leaving the form with unsaved changes."
+    },
+    "discardChangesMessage": "You have unsaved changes.",
+    "@discardChangesMessage": {
+        "description": "Body of the discard-changes dialog."
+    },
+    "discardChangesConfirm": "Discard",
+    "@discardChangesConfirm": {
+        "description": "Confirm button of the discard-changes dialog."
+    },
+    "keepEditing": "Keep editing",
+    "@keepEditing": {
+        "description": "Button of the discard-changes dialog that stays on the form."
+    },
+    "habitAdded": "Habit added",
+    "@habitAdded": {
+        "description": "SnackBar after a new habit is saved."
+    },
+    "habitSaved": "Changes saved",
+    "@habitSaved": {
+        "description": "SnackBar after an edited habit is saved."
+    },
+    "habitDeleted": "Habit deleted",
+    "@habitDeleted": {
+        "description": "SnackBar after a habit is deleted."
+    },
+    "habitNotFoundTitle": "This habit is gone",
+    "@habitNotFoundTitle": {
+        "description": "Error state title when the habit being edited no longer exists."
+    },
+    "habitNotFoundMessage": "It may have been deleted.",
+    "@habitNotFoundMessage": {
+        "description": "Error state message when the habit being edited no longer exists."
+    },
+    "goBack": "Go back",
+    "@goBack": {
+        "description": "Button that closes the screen and returns to the previous one."
+    },
+    "iconNameWater": "Water",
+    "@iconNameWater": {
+        "description": "Name of the water habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameRun": "Running",
+    "@iconNameRun": {
+        "description": "Name of the running habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameWalk": "Walking",
+    "@iconNameWalk": {
+        "description": "Name of the walking habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameBike": "Cycling",
+    "@iconNameBike": {
+        "description": "Name of the cycling habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameWorkout": "Workout",
+    "@iconNameWorkout": {
+        "description": "Name of the workout habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameSwim": "Swimming",
+    "@iconNameSwim": {
+        "description": "Name of the swimming habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameYoga": "Yoga",
+    "@iconNameYoga": {
+        "description": "Name of the yoga habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameBook": "Reading",
+    "@iconNameBook": {
+        "description": "Name of the reading habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameQuran": "Quran",
+    "@iconNameQuran": {
+        "description": "Name of the quran habit icon, read by screen readers in the icon picker."
+    },
+    "iconNamePray": "Prayer",
+    "@iconNamePray": {
+        "description": "Name of the prayer habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameWrite": "Writing",
+    "@iconNameWrite": {
+        "description": "Name of the writing habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameStudy": "Study",
+    "@iconNameStudy": {
+        "description": "Name of the study habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameCode": "Coding",
+    "@iconNameCode": {
+        "description": "Name of the coding habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameMusic": "Music",
+    "@iconNameMusic": {
+        "description": "Name of the music habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameArt": "Art",
+    "@iconNameArt": {
+        "description": "Name of the art habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameSleep": "Sleep",
+    "@iconNameSleep": {
+        "description": "Name of the sleep habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameWake": "Wake up",
+    "@iconNameWake": {
+        "description": "Name of the wake up habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameMeditate": "Meditation",
+    "@iconNameMeditate": {
+        "description": "Name of the meditation habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameMeal": "Meal",
+    "@iconNameMeal": {
+        "description": "Name of the meal habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameCoffee": "Coffee",
+    "@iconNameCoffee": {
+        "description": "Name of the coffee habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameFruit": "Healthy eating",
+    "@iconNameFruit": {
+        "description": "Name of the healthy eating habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameMedicine": "Medicine",
+    "@iconNameMedicine": {
+        "description": "Name of the medicine habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameSavings": "Savings",
+    "@iconNameSavings": {
+        "description": "Name of the savings habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameClean": "Cleaning",
+    "@iconNameClean": {
+        "description": "Name of the cleaning habit icon, read by screen readers in the icon picker."
+    },
+    "iconNamePet": "Pet",
+    "@iconNamePet": {
+        "description": "Name of the pet habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameNature": "Nature",
+    "@iconNameNature": {
+        "description": "Name of the nature habit icon, read by screen readers in the icon picker."
+    },
+    "iconNamePhone": "Phone",
+    "@iconNamePhone": {
+        "description": "Name of the phone habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameNoSmoking": "No smoking",
+    "@iconNameNoSmoking": {
+        "description": "Name of the no smoking habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameHeart": "Heart",
+    "@iconNameHeart": {
+        "description": "Name of the heart habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameStar": "Star",
+    "@iconNameStar": {
+        "description": "Name of the star habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameLanguage": "Language",
+    "@iconNameLanguage": {
+        "description": "Name of the language habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameFamily": "Family",
+    "@iconNameFamily": {
+        "description": "Name of the family habit icon, read by screen readers in the icon picker."
+    },
+    "iconNameCall": "Call",
+    "@iconNameCall": {
+        "description": "Name of the call habit icon, read by screen readers in the icon picker."
     }
 }

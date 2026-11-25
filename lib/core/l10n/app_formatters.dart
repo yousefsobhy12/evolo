@@ -53,6 +53,14 @@ class AppFormatters {
   String weekdayNarrow(DateTime date) =>
       DateFormat.EEEEE(locale.languageCode).format(date);
 
+  /// Full weekday name: "Saturday". Screen-reader label of the weekday picker.
+  String weekdayFull(DateTime date) =>
+      DateFormat.EEEE(locale.languageCode).format(date);
+
+  /// Short weekday name: "Sat" / "سبت". For the schedule summary.
+  String weekdayShort(DateTime date) =>
+      DateFormat.E(locale.languageCode).format(date);
+
   /// Weekday, month and day: "Sunday, November 22".
   String fullDate(DateTime date) =>
       digits(DateFormat.MMMMEEEEd(locale.languageCode).format(date));
