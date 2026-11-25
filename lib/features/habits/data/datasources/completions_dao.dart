@@ -98,6 +98,23 @@ class CompletionsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  /// Rewrites the target snapshot of one day's row and keeps its count.
+  /// Returns how many rows changed (0 when the habit has no row that day).
+  ///
+  /// Used when a habit's `dailyTarget` is edited: today is judged by the
+  /// habit's current target while it is on screen, but once it becomes a
+  /// past day it is judged by this snapshot. Without the rewrite, a day the
+  /// user saw as finished could turn into a broken streak at midnight.
+  Future<int> updateTargetSnapshot({
+    required String habitId,
+    required CalendarDay day,
+    required int target,
+  }) {
+    return (update(completions)
+          ..where((t) => t.habitId.equals(habitId) & t.day.equalsValue(day)))
+        .write(CompletionsCompanion(target: Value(target)));
+  }
+
   Future<HabitRow?> _findHabit(String habitId) {
     return (select(
       habits,

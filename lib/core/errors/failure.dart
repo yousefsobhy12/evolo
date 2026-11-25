@@ -8,6 +8,7 @@ enum ValidationReason {
   invalidTarget,
   noDaysSelected,
   negativeCount,
+  targetTooHigh,
 }
 
 /// Every error the domain can report. `sealed` makes `switch` exhaustive,

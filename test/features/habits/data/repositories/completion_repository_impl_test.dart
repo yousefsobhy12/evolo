@@ -16,13 +16,20 @@ void main() {
   late AppDatabase db;
   late HabitRepositoryImpl habits;
   late CompletionRepositoryImpl repository;
+  late DateTime clock;
   var idCounter = 0;
 
   final day1 = CalendarDay(2026, 11, 20);
   final day2 = CalendarDay(2026, 11, 21);
 
+  /// Moves the habits repository's clock to [day2]. Call it before editing a
+  /// habit's target to make [day1] a past day: editing the target rewrites
+  /// the snapshot of the day that is "today" on that clock, and only that.
+  void moveClockToDay2() => clock = DateTime(2026, 11, 21, 9);
+
   setUp(() {
     idCounter = 0;
+    clock = DateTime(2026, 11, 20, 9);
     db = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),
@@ -32,7 +39,7 @@ void main() {
     habits = HabitRepositoryImpl(
       db.habitsDao,
       generateId: () => 'h${++idCounter}',
-      now: () => DateTime(2026, 11, 20, 9),
+      now: () => clock,
     );
     repository = CompletionRepositoryImpl(db.completionsDao);
   });
@@ -92,6 +99,7 @@ void main() {
     test('a later write re-snapshots only the day it touches', () async {
       final habit = await createHabit(dailyTarget: 3);
       await repository.setCount(habitId: habit.id, day: day1, count: 3);
+      moveClockToDay2();
 
       await habits.updateHabit(habit.copyWith(dailyTarget: 5));
       await repository.setCount(habitId: habit.id, day: day2, count: 1);
@@ -343,6 +351,7 @@ void main() {
       () async {
         final habit = await createHabit(dailyTarget: 3);
         await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+        moveClockToDay2();
         await habits.updateHabit(habit.copyWith(dailyTarget: 5));
 
         await repository.adjustCount(habitId: habit.id, day: day1, delta: 0);
@@ -354,6 +363,7 @@ void main() {
     test('re-snapshots the target when the count changes', () async {
       final habit = await createHabit(dailyTarget: 3);
       await repository.adjustCount(habitId: habit.id, day: day1, delta: 2);
+      moveClockToDay2();
       await habits.updateHabit(habit.copyWith(dailyTarget: 5));
 
       await repository.adjustCount(habitId: habit.id, day: day1, delta: 1);
