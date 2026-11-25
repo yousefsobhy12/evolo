@@ -44,7 +44,7 @@ abstract final class AppTheme {
       onSurface: colors.textPrimary,
       onSurfaceVariant: colors.textSecondary,
       surfaceContainerHighest: colors.surfaceMuted,
-      outline: colors.checkRing,
+      outline: colors.outline,
       outlineVariant: colors.surfaceMuted,
     );
 
@@ -109,8 +109,8 @@ abstract final class AppTheme {
       errorStyle: textTheme.bodySmall?.copyWith(color: colors.error),
       prefixIconColor: colors.textSecondary,
       suffixIconColor: colors.textSecondary,
-      border: border(colors.surface, 0),
-      enabledBorder: border(colors.surface, 0),
+      border: border(colors.outline, 1),
+      enabledBorder: border(colors.outline, 1),
       // textAccent (not primary): orange on white is 2.67:1, a focus
       // indicator needs 3:1. textAccent is 4.52:1 in Light.
       focusedBorder: border(colors.textAccent, 2),

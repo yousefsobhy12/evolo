@@ -40,6 +40,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.checkRing,
     required this.error,
     required this.onError,
+    required this.outline,
   });
 
   final Color background;
@@ -59,6 +60,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color tileOrange;
   final Color tileGreen;
   final Color tilePink;
+  final Color outline;
 
   /// Habit icon color on each tile. Light: dark brown on the pastel tile.
   /// Dark: the pastel itself on the darkened tile.
@@ -104,6 +106,7 @@ class AppColors extends ThemeExtension<AppColors> {
     checkRing: Color(0xFF8C8580),
     error: Color(0xFFB3261E),
     onError: Color(0xFFFFFFFF),
+    outline: Color(0xFF8C8580),
   );
 
   // Not const: tile colors are computed with Color.alphaBlend.
@@ -147,6 +150,7 @@ class AppColors extends ThemeExtension<AppColors> {
     checkRing: const Color(0xFF7A6B63),
     error: const Color(0xFFFF8A80),
     onError: const Color(0xFF1C1411),
+    outline: const Color(0xFF7A6B63),
   );
 
   @override
@@ -179,6 +183,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? checkRing,
     Color? error,
     Color? onError,
+    Color? outline,
   }) {
     return AppColors(
       background: background ?? this.background,
@@ -209,6 +214,7 @@ class AppColors extends ThemeExtension<AppColors> {
       checkRing: checkRing ?? this.checkRing,
       error: error ?? this.error,
       onError: onError ?? this.onError,
+      outline: outline ?? this.outline,
     );
   }
 
@@ -244,6 +250,7 @@ class AppColors extends ThemeExtension<AppColors> {
       checkRing: Color.lerp(checkRing, other.checkRing, t)!,
       error: Color.lerp(error, other.error, t)!,
       onError: Color.lerp(onError, other.onError, t)!,
+      outline: Color.lerp(outline, other.outline, t)!,
     );
   }
 }

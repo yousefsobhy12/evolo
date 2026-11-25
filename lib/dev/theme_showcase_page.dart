@@ -323,7 +323,7 @@ class _RadiusBlock extends StatelessWidget {
     final c = context.colors;
     final items = <(String, double)>[
       ('tile 14', AppRadius.tile),
-      ('input 16', AppRadius.input),
+      ('input 20', AppRadius.input),
       ('card 20', AppRadius.card),
       ('reminder 24', AppRadius.reminder),
       ('pill', AppRadius.pill),

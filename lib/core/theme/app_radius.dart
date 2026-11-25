@@ -6,7 +6,7 @@ abstract final class AppRadius {
   static const double reminder = 24;
 
   /// PROVISIONAL: not specified in the design, verify against the shot.
-  static const double input = 16;
+  static const double input = 20;
 
   /// Full pill (buttons, bars). Use with a large value or StadiumBorder.
   static const double pill = 999;
