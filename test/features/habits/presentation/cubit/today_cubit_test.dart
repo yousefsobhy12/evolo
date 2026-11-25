@@ -109,14 +109,14 @@ void main() {
     return cubit;
   }
 
-  void stubAdjustToFail() {
+  void stubAdjustToFail([Failure failure = const DatabaseFailure()]) {
     when(
       () => completionRepository.adjustCount(
         habitId: any(named: 'habitId'),
         day: any(named: 'day'),
         delta: any(named: 'delta'),
       ),
-    ).thenAnswer((_) async => const Left<Failure, Unit>(NotFoundFailure()));
+    ).thenAnswer((_) async => Left<Failure, Unit>(failure));
   }
 
   group('loading', () {
@@ -481,13 +481,23 @@ void main() {
 
       await cubit.tapCheck(cubit.state.items.single);
 
-      expect(cubit.state.actionFailure, const NotFoundFailure());
+      expect(cubit.state.actionFailure, const DatabaseFailure());
       expect(cubit.state.status, TodayStatus.success);
       expect(cubit.state.items, hasLength(1));
 
       cubit.dismissActionFailure();
 
       expect(cubit.state.actionFailure, isNull);
+    });
+
+    test('a tap on a habit deleted in the meantime shows no error', () async {
+      final cubit = await loaded();
+      stubAdjustToFail(const NotFoundFailure());
+
+      await cubit.tapCheck(cubit.state.items.single);
+
+      expect(cubit.state.actionFailure, isNull);
+      expect(cubit.state.status, TodayStatus.success);
     });
   });
 

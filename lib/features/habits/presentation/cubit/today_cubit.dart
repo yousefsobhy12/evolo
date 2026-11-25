@@ -154,6 +154,9 @@ class TodayCubit extends Cubit<TodayState> {
     );
     // Success needs nothing: the completions stream emits the new count.
     result.fold<void>((failure) {
+      // The habit was deleted while this tap was on its way. The habits
+      // stream is about to remove the card, so an error would only confuse.
+      if (failure is NotFoundFailure) return;
       _actionFailure = failure;
       _publish();
     }, (_) {});

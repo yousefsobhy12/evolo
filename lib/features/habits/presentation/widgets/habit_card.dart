@@ -18,6 +18,7 @@ class HabitCard extends StatelessWidget {
     required this.item,
     required this.onTap,
     required this.onDecrement,
+    this.onEdit,
     super.key,
   });
 
@@ -27,6 +28,7 @@ class HabitCard extends StatelessWidget {
   /// is disabled instead of silently ignoring the tap.
   final VoidCallback onTap;
   final VoidCallback onDecrement;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +51,20 @@ class HabitCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              _IconTile(item: item),
-              AppSpacing.s12.hSpace,
-              _Details(item: item).expanded(),
+              Semantics(
+                onTapHint: l10n.editHabitTitle,
+                child: InkWell(
+                  onTap: onEdit,
+                  borderRadius: BorderRadius.circular(AppRadius.tile),
+                  child: Row(
+                    children: [
+                      _IconTile(item: item),
+                      AppSpacing.s12.hSpace,
+                      _Details(item: item).expanded(),
+                    ],
+                  ),
+                ),
+              ).expanded(),
               if (item.isCounter)
                 IconButton(
                   onPressed: item.canDecrement ? onDecrement : null,
@@ -181,6 +194,7 @@ class _FreezeBadge extends StatelessWidget {
     final formatters = context.formatters;
 
     return Semantics(
+      container: true,
       label: formatters.digits(context.l10n.streakFreezesAvailable(count)),
       excludeSemantics: true,
       child: Row(

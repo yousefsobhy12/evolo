@@ -4,7 +4,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:evolo/core/errors/failure.dart';
 import 'package:evolo/core/router/app_routes.dart';
 import 'package:evolo/core/utils/calendar_day.dart';
-import 'package:evolo/dev/new_habit_placeholder_page.dart';
 import 'package:evolo/features/habits/domain/entities/habit_schedule.dart';
 import 'package:evolo/features/habits/domain/entities/today_item.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
@@ -78,7 +77,12 @@ void main() {
         ),
         GoRoute(
           path: AppRoutes.newHabit,
-          builder: (context, state) => const NewHabitPlaceholderPage(),
+          builder: (context, state) => const _FormStub(),
+        ),
+        GoRoute(
+          path: AppRoutes.editHabitPattern,
+          builder: (context, state) =>
+              _FormStub(habitId: state.pathParameters['id']),
         ),
       ],
     );
@@ -132,7 +136,7 @@ void main() {
       await tester.tap(find.text('Add a habit'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(NewHabitPlaceholderPage), findsOneWidget);
+      expect(find.byType(_FormStub), findsOneWidget);
     });
 
     testWidgets('a day with nothing due says it is a rest day', (tester) async {
@@ -242,7 +246,20 @@ void main() {
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      expect(find.byType(NewHabitPlaceholderPage), findsOneWidget);
+      expect(find.byType(_FormStub), findsOneWidget);
+    });
+
+    testWidgets('tapping the body of a card opens that habit for editing', (
+      tester,
+    ) async {
+      await pump(tester, stateOf(items: [water, read]));
+
+      await tester.tap(find.text('Read'));
+      await tester.pumpAndSettle();
+
+      final stub = tester.widget<_FormStub>(find.byType(_FormStub));
+      expect(stub.habitId, 'h2');
+      verifyNever(() => cubit.tapCheck(any()));
     });
   });
 
@@ -299,4 +316,15 @@ void main() {
       });
     }
   });
+}
+
+/// Stands in for the real form: these tests only check that Today navigates.
+/// Stands in for the real form: these tests only check that Today navigates.
+class _FormStub extends StatelessWidget {
+  const new({this.habitId});
+
+  final String? habitId;
+
+  @override
+  Widget build(BuildContext context) => const Scaffold();
 }

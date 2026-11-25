@@ -3,18 +3,23 @@ import 'package:evolo/app.dart';
 import 'package:evolo/core/di/injection.dart';
 import 'package:evolo/core/router/route_error_page.dart';
 import 'package:evolo/core/utils/calendar_day.dart';
-import 'package:evolo/dev/new_habit_placeholder_page.dart';
 import 'package:evolo/dev/theme_showcase_page.dart';
 import 'package:evolo/features/habits/domain/entities/habit_schedule.dart';
+import 'package:evolo/features/habits/domain/repositories/habit_repository.dart';
+import 'package:evolo/features/habits/presentation/cubit/habit_form_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_state.dart';
+import 'package:evolo/features/habits/presentation/pages/habit_form_page.dart';
 import 'package:evolo/features/habits/presentation/pages/today_page.dart';
+import 'package:evolo/features/habits/presentation/utils/habit_icons.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockTodayCubit extends MockCubit<TodayState> implements TodayCubit;
+class MockHabitRepository extends Mock implements HabitRepository;
 
 /// The shell of the app: language, direction, routes. The Today page's own
 /// behavior is covered in `today_page_test.dart`; here it gets a fake cubit so
@@ -46,6 +51,17 @@ void main() {
       );
       return cubit;
     });
+    // The form must not reach the real database either: in a widget test it
+    // never answers and the test hangs. Adding a habit calls nothing on the
+    // repository until Save, so a bare mock is enough.
+    await getIt.unregister<HabitFormCubit>();
+    getIt.registerFactoryParam<HabitFormCubit, String?, void>(
+      (habitId, _) => HabitFormCubit(
+        MockHabitRepository(),
+        habitId: habitId,
+        defaultIconKey: HabitIcons.keys.first,
+      ),
+    );
   });
 
   tearDown(getIt.reset);
@@ -103,11 +119,15 @@ void main() {
     await pumpApp(tester);
 
     await tester.tap(find.byType(FloatingActionButton));
-    await tester.pumpAndSettle();
-    expect(find.byType(NewHabitPlaceholderPage), findsOneWidget);
+    // Not pumpAndSettle: the name field is focused and its caret blinks
+    // forever, so the tree never "settles".
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byType(HabitFormPage), findsOneWidget);
 
     getIt<GoRouter>().pop();
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     expect(find.byType(TodayPage), findsOneWidget);
   });
 

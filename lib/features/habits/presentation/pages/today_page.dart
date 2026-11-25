@@ -196,6 +196,7 @@ class _HabitList extends StatelessWidget {
           item: item,
           onTap: () => cubit.tapCheck(item),
           onDecrement: () => cubit.decrement(item),
+          onEdit: () => context.push(AppRoutes.editHabit(item.habit.id)),
         );
       },
     );
