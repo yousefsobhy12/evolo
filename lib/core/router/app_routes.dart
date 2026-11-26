@@ -1,5 +1,6 @@
 abstract final class AppRoutes {
   static const today = '/';
+  static const allHabits = '/habits';
   static const newHabit = '/habits/new';
 
   /// The route definition (with the `:id` parameter).

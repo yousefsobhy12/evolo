@@ -9,6 +9,7 @@ import 'package:evolo/features/habits/domain/entities/today_item.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_state.dart';
 import 'package:evolo/features/habits/presentation/pages/today_page.dart';
+import 'package:evolo/features/habits/presentation/widgets/day_strip.dart';
 import 'package:evolo/features/habits/presentation/widgets/habit_check_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,7 +52,8 @@ void main() {
   final read = todayItem(id: 'h2', name: 'Read', streak: 12, atRisk: true);
 
   late MockTodayCubit cubit;
-
+  // The greeting reads this clock on every build.
+  late DateTime clock;
   setUpAll(() async {
     await initializeTestLocales();
     registerFallbackValue(today);
@@ -59,6 +61,7 @@ void main() {
   });
 
   setUp(() {
+    clock = DateTime(2026, 11, 22, 9);
     cubit = MockTodayCubit();
     when(() => cubit.tapCheck(any())).thenAnswer((_) async {});
     when(() => cubit.decrement(any())).thenAnswer((_) async {});
@@ -72,8 +75,12 @@ void main() {
           path: AppRoutes.today,
           builder: (context, state) => BlocProvider<TodayCubit>.value(
             value: cubit,
-            child: const TodayPage(),
+            child: TodayPage(now: () => clock),
           ),
+        ),
+        GoRoute(
+          path: AppRoutes.allHabits,
+          builder: (context, state) => const Scaffold(body: Text('all habits')),
         ),
         GoRoute(
           path: AppRoutes.newHabit,
@@ -157,6 +164,34 @@ void main() {
     });
   });
 
+  group('the header', () {
+    testWidgets('greets by the time of day and shows the date', (tester) async {
+      await pump(tester, stateOf(items: [read]));
+
+      expect(find.text('Good morning'), findsOneWidget);
+      expect(find.text('Sunday, November 22'), findsOneWidget);
+    });
+
+    testWidgets('the date follows the selected day', (tester) async {
+      await pump(tester, stateOf(items: [read], selectedDay: nov(21)));
+
+      expect(find.text('Saturday, November 21'), findsOneWidget);
+    });
+
+    testWidgets('the greeting is refreshed when the app returns', (
+      tester,
+    ) async {
+      await pump(tester, stateOf(items: [read]));
+      clock = DateTime(2026, 11, 22, 20);
+
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+
+      expect(find.text('Good evening'), findsOneWidget);
+    });
+  });
+
   group('completing habits', () {
     testWidgets('a tap on the circle goes to the cubit with its item', (
       tester,
@@ -205,10 +240,11 @@ void main() {
       verify(() => cubit.selectDay(nov(21))).called(1);
     });
 
-    testWidgets('the week buttons go to the cubit', (tester) async {
+    testWidgets('swiping the strip goes to the cubit', (tester) async {
       await pump(tester, stateOf(items: [read]));
 
-      await tester.tap(find.byTooltip('Previous week'));
+      await tester.fling(find.byType(DayStrip), const Offset(200, 0), 1000);
+      await tester.pumpAndSettle();
 
       verify(() => cubit.previousWeek()).called(1);
     });
@@ -263,6 +299,93 @@ void main() {
     });
   });
 
+  group('See all', () {
+    testWidgets('next to the heading opens every habit', (tester) async {
+      await pump(tester, stateOf(items: [read]));
+
+      await tester.tap(find.text('See all'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('all habits'), findsOneWidget);
+    });
+
+    testWidgets('is also there on a rest day', (tester) async {
+      await pump(tester, stateOf());
+
+      await tester.tap(find.text('See all'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('all habits'), findsOneWidget);
+    });
+
+    testWidgets('is hidden when there are no habits at all', (tester) async {
+      await pump(tester, stateOf(hasAnyHabit: false));
+
+      expect(find.text('See all'), findsNothing);
+    });
+  });
+
+  group('the whole page scrolls', () {
+    testWidgets('the header leaves the screen with the list', (tester) async {
+      final many = [
+        for (var i = 0; i < 12; i++) todayItem(id: 'h$i', name: 'Habit $i'),
+      ];
+      await pump(tester, stateOf(items: many));
+      final before = tester.getTopLeft(find.text('Good morning')).dy;
+
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -80));
+      await tester.pump();
+
+      expect(tester.getTopLeft(find.text('Good morning')).dy, lessThan(before));
+    });
+
+    testWidgets('on a short screen the empty action is reachable', (
+      tester,
+    ) async {
+      whenListen(
+        cubit,
+        const Stream<TodayState>.empty(),
+        initialState: stateOf(hasAnyHabit: false),
+      );
+      await pumpApp(
+        tester,
+        router: routerFor(cubit),
+        size: const Size(360, 400),
+        textScale: 1.5,
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('Add a habit'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Add a habit'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(_FormStub), findsOneWidget);
+    });
+
+    testWidgets('a wide screen shows the empty state without overflow', (
+      tester,
+    ) async {
+      whenListen(
+        cubit,
+        const Stream<TodayState>.empty(),
+        initialState: stateOf(hasAnyHabit: false),
+      );
+      await pumpApp(
+        tester,
+        router: routerFor(cubit),
+        size: const Size(800, 360),
+        textScale: 1.5,
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+    });
+  });
+
   group('fits a 360 wide phone without overflow', () {
     final busy = [
       water,
@@ -289,6 +412,14 @@ void main() {
                 locale: locale,
                 brightness: brightness,
                 textScale: scale,
+              );
+              await tester.pumpAndSettle();
+              expect(tester.takeException(), isNull);
+
+              // Rows are built lazily, so scroll to the end as well.
+              await tester.drag(
+                find.byType(CustomScrollView),
+                const Offset(0, -2000),
               );
               await tester.pumpAndSettle();
 
@@ -318,7 +449,6 @@ void main() {
   });
 }
 
-/// Stands in for the real form: these tests only check that Today navigates.
 /// Stands in for the real form: these tests only check that Today navigates.
 class _FormStub extends StatelessWidget {
   const new({this.habitId});

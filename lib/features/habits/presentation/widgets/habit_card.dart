@@ -4,19 +4,18 @@ import 'package:evolo/core/l10n/l10n.dart';
 import 'package:evolo/core/theme/app_radius.dart';
 import 'package:evolo/core/theme/app_spacing.dart';
 import 'package:evolo/features/habits/domain/entities/today_item.dart';
-import 'package:evolo/features/habits/presentation/utils/habit_color_style.dart';
-import 'package:evolo/features/habits/presentation/utils/habit_icons.dart';
-import 'package:evolo/features/habits/presentation/widgets/habit_check_button.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_icon_tile.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// One row of the Today list.
+/// The white card of a habit on the Today list. The check circle is outside
+/// it (see `HabitTimelineRow`). A counter habit gets a column at the end with
+/// its progress and the minus button.
 ///
 /// Pure UI: it draws a [TodayItem] and reports presses. Which press changes
 /// the count by how much is decided by `TodayItem` and `TodayCubit`.
 class HabitCard extends StatelessWidget {
   const new({
     required this.item,
-    required this.onTap,
     required this.onDecrement,
     this.onEdit,
     super.key,
@@ -24,104 +23,126 @@ class HabitCard extends StatelessWidget {
 
   final TodayItem item;
 
-  /// The check circle. A finished counter has nothing to add, so the button
-  /// is disabled instead of silently ignoring the tap.
-  final VoidCallback onTap;
   final VoidCallback onDecrement;
+
+  /// A press anywhere on the card except the counter column.
   final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final l10n = context.l10n;
-    final habit = item.habit;
 
     return Material(
       color: colors.surface,
+      // Keeps the ripple inside the rounded corners.
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.card),
       ),
       child: ConstrainedBox(
         // 72 from the design, but it grows with a big system font.
         constraints: const BoxConstraints(minHeight: 72),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: AppSpacing.s12,
-            vertical: AppSpacing.s12,
-          ),
-          child: Row(
-            children: [
-              Semantics(
-                onTapHint: l10n.editHabitTitle,
-                child: InkWell(
-                  onTap: onEdit,
-                  borderRadius: BorderRadius.circular(AppRadius.tile),
+        child: Row(
+          children: [
+            Semantics(
+              onTapHint: l10n.editHabitTitle,
+              child: InkWell(
+                onTap: onEdit,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.s12),
                   child: Row(
                     children: [
-                      _IconTile(item: item),
+                      HabitIconTile(
+                        iconKey: item.habit.iconKey,
+                        color: item.habit.color,
+                      ),
                       AppSpacing.s12.hSpace,
                       _Details(item: item).expanded(),
                     ],
                   ),
                 ),
-              ).expanded(),
-              if (item.isCounter)
-                IconButton(
-                  onPressed: item.canDecrement ? onDecrement : null,
-                  tooltip: l10n.removeOne,
-                  icon: const Icon(Icons.remove),
-                ),
-              HabitCheckButton(
-                progress: item.progress,
-                isCompleted: item.isCompleted,
-                isCounter: item.isCounter,
-                semanticLabel: _checkLabel(context, habit.name),
-                onPressed: item.tapDelta == 0 ? null : onTap,
               ),
-            ],
-          ),
+            ).expanded(),
+            if (item.isCounter)
+              _CounterColumn(item: item, onDecrement: onDecrement),
+          ],
         ),
       ),
     );
   }
-
-  String _checkLabel(BuildContext context, String name) {
-    final l10n = context.l10n;
-    if (item.isCounter) {
-      return item.isCompleted
-          ? context.formatters.digits(
-              l10n.habitProgressSemantics(item.count, item.target),
-            )
-          : l10n.addOneTo(name);
-    }
-    return item.isCompleted ? l10n.undoHabit(name) : l10n.completeHabit(name);
-  }
 }
 
-class _IconTile extends StatelessWidget {
-  const new({required this.item});
+/// A divider, then "3 / 8" above the minus button.
+///
+/// Adding is the job of the circle outside the card, so there is no plus here.
+class _CounterColumn extends StatelessWidget {
+  const new({required this.item, required this.onDecrement});
 
   final TodayItem item;
+  final VoidCallback onDecrement;
+
+  /// Fixed, so a big count or a big font cannot squeeze the habit name.
+  static const double _width = 56;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
-    final habit = item.habit;
+    final l10n = context.l10n;
+    final formatters = context.formatters;
 
-    return ExcludeSemantics(
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: habit.color.tileBackground(colors),
-          borderRadius: BorderRadius.circular(AppRadius.tile),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // A fixed height instead of IntrinsicHeight, which costs an extra
+        // layout pass on every row.
+        SizedBox(
+          width: 1,
+          height: 48,
+          child: ColoredBox(color: context.colors.surfaceMuted),
         ),
-        child: Icon(
-          HabitIcons.resolve(habit.iconKey),
-          size: 24,
-          color: habit.color.tileForeground(colors),
+        // Its own small padding: the card's 12 on top of a 48 button would
+        // make a counter card much taller than the others.
+        Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.s4,
+            vertical: AppSpacing.s4,
+          ),
+          child: SizedBox(
+            width: _width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  container: true,
+                  label: formatters.digits(
+                    l10n.habitProgressSemantics(item.count, item.target),
+                  ),
+                  excludeSemantics: true,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '${formatters.number(item.count)} / '
+                      '${formatters.number(item.target)}',
+                      maxLines: 1,
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: item.canDecrement ? onDecrement : null,
+                  tooltip: l10n.removeOne,
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size.square(48),
+                  ),
+                  icon: const Icon(Icons.remove),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -155,12 +176,6 @@ class _Details extends StatelessWidget {
           spacing: AppSpacing.s8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            if (item.isCounter)
-              Text(
-                '${formatters.number(item.count)} / '
-                '${formatters.number(item.target)}',
-                style: caption,
-              ),
             Text(
               streak.current > 0
                   ? formatters.digits(l10n.streakCurrent(streak.current))

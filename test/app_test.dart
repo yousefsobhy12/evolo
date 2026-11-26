@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:evolo/app.dart';
 import 'package:evolo/core/di/injection.dart';
+import 'package:evolo/core/l10n/l10n.dart';
 import 'package:evolo/core/router/route_error_page.dart';
 import 'package:evolo/core/utils/calendar_day.dart';
 import 'package:evolo/dev/theme_showcase_page.dart';
@@ -85,7 +86,9 @@ void main() {
     await pumpApp(tester);
 
     expect(find.byType(TodayPage), findsOneWidget);
-    expect(find.text('اليوم'), findsOneWidget);
+    // The greeting depends on the real clock, so check a fixed text.
+    final arabic = lookupAppLocalizations(const Locale('ar'));
+    expect(find.text(arabic.emptyNoHabitsTitle), findsOneWidget);
     expect(direction(tester), TextDirection.rtl);
   });
 
@@ -96,7 +99,8 @@ void main() {
     await tester.tap(find.text('Switch language'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Today'), findsOneWidget);
+    final english = lookupAppLocalizations(const Locale('en'));
+    expect(find.text(english.emptyNoHabitsTitle), findsOneWidget);
     expect(direction(tester), TextDirection.ltr);
   });
 

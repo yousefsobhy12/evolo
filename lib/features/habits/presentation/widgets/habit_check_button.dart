@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:evolo/core/extensions/extensions.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// The round button at the end of a habit card.
+/// The round button beside a habit card, on the start side.
 ///
 /// - Goal of 1: an empty ring, which fills with a check when done.
 /// - Goal above 1 ([isCounter]): a progress ring with a "+" inside, which
@@ -59,6 +59,15 @@ class HabitCheckButton extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  // The circle sits on the screen background, so it brings
+                  // its own surface. First in the stack: under the ring.
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors.surface,
+                    ),
+                    child: const SizedBox.square(dimension: _size),
+                  ),
                   TweenAnimationBuilder<double>(
                     tween: Tween<double>(end: isCounter ? progress : 0),
                     duration: _duration,

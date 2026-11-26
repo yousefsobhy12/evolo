@@ -1,6 +1,6 @@
 import 'package:evolo/features/habits/domain/entities/today_item.dart';
-import 'package:evolo/features/habits/presentation/widgets/habit_card.dart';
 import 'package:evolo/features/habits/presentation/widgets/habit_check_button.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_timeline_row.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -34,8 +34,10 @@ void main() {
           alignment: Alignment.topCenter,
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: HabitCard(
+            child: HabitTimelineRow(
               item: item,
+              isFirst: true,
+              isLast: true,
               onTap: () => taps++,
               onDecrement: () => decrements++,
             ),
@@ -141,6 +143,47 @@ void main() {
       // The minus still works to take a count back.
       await tester.tap(find.byIcon(Icons.remove));
       expect(decrements, 1);
+    });
+  });
+
+  group('the counter column', () {
+    testWidgets('a habit with a goal of 1 has none', (tester) async {
+      await pump(tester, todayItem());
+
+      expect(find.byType(IconButton), findsNothing);
+      expect(find.textContaining(' / '), findsNothing);
+    });
+
+    testWidgets('sits at the end of the card, after the name', (tester) async {
+      await pump(tester, todayItem(count: 3, target: 8));
+
+      expect(
+        tester.getCenter(find.text('3 / 8')).dx,
+        greaterThan(tester.getCenter(find.text('Drink water')).dx),
+      );
+    });
+
+    testWidgets('the minus has a 48 tap target', (tester) async {
+      await pump(tester, todayItem(count: 3, target: 8));
+
+      final size = tester.getSize(find.byType(IconButton));
+      expect(size.width, greaterThanOrEqualTo(48));
+      expect(size.height, greaterThanOrEqualTo(48));
+    });
+
+    testWidgets('the count is read as progress', (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(tester, todayItem(count: 3, target: 8));
+
+      expect(find.bySemanticsLabel('3 of 8 done'), findsOneWidget);
+
+      handle.dispose();
+    });
+
+    testWidgets('the biggest count does not overflow', (tester) async {
+      await pump(tester, todayItem(count: 99, target: 99), textScale: 2);
+
+      expect(tester.takeException(), isNull);
     });
   });
 

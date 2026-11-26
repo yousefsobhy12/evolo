@@ -34,7 +34,6 @@ void main() {
   DayStrip strip({bool canGoPrevious = true, bool canGoNext = true}) {
     return DayStrip(
       days: days,
-      title: 'November 2026',
       canGoPrevious: canGoPrevious,
       canGoNext: canGoNext,
       onSelectDay: selected.add,
@@ -67,7 +66,6 @@ void main() {
     for (final number in ['21', '22', '23', '24', '25', '26', '27']) {
       expect(find.text(number), findsOneWidget);
     }
-    expect(find.text('November 2026'), findsOneWidget);
   });
 
   testWidgets('tapping an open day reports it', (tester) async {
@@ -86,24 +84,75 @@ void main() {
     expect(selected, isEmpty);
   });
 
-  testWidgets('the week buttons report taps when enabled', (tester) async {
+  testWidgets('day names are short in English, one letter in Arabic', (
+    tester,
+  ) async {
     await pump(tester, strip());
+    expect(find.text('Sat'), findsOneWidget);
+    expect(find.text('Wed'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Previous week'));
-    await tester.tap(find.byTooltip('Next week'));
-
-    expect(previousTaps, 1);
-    expect(nextTaps, 1);
+    await pump(tester, strip(), locale: const Locale('ar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sat'), findsNothing);
+    expect(find.text('س'), findsOneWidget);
   });
 
-  testWidgets('the week buttons do nothing when disabled', (tester) async {
+  Future<void> swipe(WidgetTester tester, double dx) async {
+    await tester.fling(find.byType(DayStrip), Offset(dx, 0), 1000);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('English: swiping right goes back, left goes on', (tester) async {
+    await pump(tester, strip());
+
+    await swipe(tester, 200);
+    expect((previousTaps, nextTaps), (1, 0));
+
+    await swipe(tester, -200);
+    expect((previousTaps, nextTaps), (1, 1));
+  });
+
+  testWidgets('Arabic: the swipe directions are mirrored', (tester) async {
+    await pump(tester, strip(), locale: const Locale('ar'));
+
+    await swipe(tester, -200);
+    expect((previousTaps, nextTaps), (1, 0));
+
+    await swipe(tester, 200);
+    expect((previousTaps, nextTaps), (1, 1));
+  });
+
+  testWidgets('a swipe does nothing when that week is closed', (tester) async {
     await pump(tester, strip(canGoPrevious: false, canGoNext: false));
 
-    await tester.tap(find.byTooltip('Previous week'));
-    await tester.tap(find.byTooltip('Next week'));
+    await swipe(tester, 200);
+    await swipe(tester, -200);
 
-    expect(previousTaps, 0);
-    expect(nextTaps, 0);
+    expect((previousTaps, nextTaps), (0, 0));
+  });
+
+  /// The labels of the custom actions of the first day cell.
+  List<String> actionLabels(WidgetTester tester) => [
+    for (final widget in tester.widgetList<Semantics>(
+      find.descendant(
+        of: find.byType(DayStrip),
+        matching: find.byType(Semantics),
+      ),
+    ))
+      if (widget.properties.customSemanticsActions case final actions?)
+        for (final action in actions.keys) action.label!,
+  ].take(2).toList();
+
+  testWidgets('screen readers get the week actions', (tester) async {
+    await pump(tester, strip());
+
+    expect(actionLabels(tester), ['Previous week', 'Next week']);
+  });
+
+  testWidgets('no week actions when both weeks are closed', (tester) async {
+    await pump(tester, strip(canGoPrevious: false, canGoNext: false));
+
+    expect(actionLabels(tester), isEmpty);
   });
 
   testWidgets('each day has a full-date label for screen readers', (
