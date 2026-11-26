@@ -4,8 +4,10 @@ import 'package:evolo/core/router/app_routes.dart';
 import 'package:evolo/core/router/route_error_page.dart';
 import 'package:evolo/core/theme/theme_mode_cubit.dart';
 import 'package:evolo/dev/theme_showcase_page.dart';
+import 'package:evolo/features/habits/presentation/cubit/all_habits_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/habit_form_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
+import 'package:evolo/features/habits/presentation/pages/all_habits_page.dart';
 import 'package:evolo/features/habits/presentation/pages/habit_form_page.dart';
 import 'package:evolo/features/habits/presentation/pages/today_page.dart';
 import 'package:flutter/foundation.dart';
@@ -25,7 +27,13 @@ GoRouter createAppRouter() {
           child: const TodayPage(),
         ),
       ),
-      // S7 replaces the placeholder with the real form.
+      GoRoute(
+        path: AppRoutes.allHabits,
+        builder: (context, state) => BlocProvider(
+          create: (_) => getIt<AllHabitsCubit>(),
+          child: const AllHabitsPage(),
+        ),
+      ),
       GoRoute(
         path: AppRoutes.newHabit,
         builder: (context, state) => BlocProvider(

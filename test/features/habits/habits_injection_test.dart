@@ -11,6 +11,7 @@ import 'package:evolo/features/habits/domain/repositories/habit_repository.dart'
 import 'package:evolo/features/habits/domain/usecases/get_streak_status.dart';
 import 'package:evolo/features/habits/domain/usecases/get_today_items.dart';
 import 'package:evolo/features/habits/habits_injection.dart';
+import 'package:evolo/features/habits/presentation/cubit/all_habits_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/today_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,6 +79,15 @@ void main() {
   test('TodayCubit is a factory: every resolve is a new instance', () {
     final first = getIt<TodayCubit>();
     final second = getIt<TodayCubit>();
+    addTearDown(first.close);
+    addTearDown(second.close);
+
+    expect(first, isNot(same(second)));
+  });
+
+  test('AllHabitsCubit is a factory', () {
+    final first = getIt<AllHabitsCubit>();
+    final second = getIt<AllHabitsCubit>();
     addTearDown(first.close);
     addTearDown(second.close);
 
