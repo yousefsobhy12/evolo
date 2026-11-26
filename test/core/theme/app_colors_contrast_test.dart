@@ -61,11 +61,18 @@ void main() {
         );
       });
 
+      test('accent text is readable on the screen background', () {
+        expect(
+          contrastRatio(c.textAccent, c.background),
+          greaterThanOrEqualTo(4.5),
+        );
+      });
+
       test('the empty check circle is visible on the card surface', () {
         expect(contrastRatio(c.checkRing, c.surface), greaterThanOrEqualTo(3));
       });
 
-      test('the input border is visible on the surface and the background', () {
+      test('outlines are visible on the surface and the background', () {
         expect(contrastRatio(c.outline, c.surface), greaterThanOrEqualTo(3));
         expect(contrastRatio(c.outline, c.background), greaterThanOrEqualTo(3));
       });

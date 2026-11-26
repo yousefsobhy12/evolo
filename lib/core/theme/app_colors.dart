@@ -62,8 +62,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color tilePink;
   final Color outline;
 
-  /// Habit icon color on each tile. Light: dark brown on the pastel tile.
-  /// Dark: the pastel itself on the darkened tile.
+  /// Habit icon color on each tile. Light: a darker shade of the tile's own
+  /// hue, as in the design. Dark: the pastel itself on the darkened tile.
   final Color onTileOrange;
   final Color onTileGreen;
   final Color onTilePink;
@@ -94,9 +94,9 @@ class AppColors extends ThemeExtension<AppColors> {
     tileOrange: _orangeTile,
     tileGreen: _greenTile,
     tilePink: _pinkTile,
-    onTileOrange: Color(0xFF3B1F14),
-    onTileGreen: Color(0xFF3B1F14),
-    onTilePink: Color(0xFF3B1F14),
+    onTileOrange: Color(0xFFB8500F),
+    onTileGreen: Color(0xFF5C6E14),
+    onTilePink: Color(0xFFA8327F),
     barBrown: Color(0xFF513632),
     barRust: Color(0xFF98460E),
     barOlive: Color(0xFF8BA231),

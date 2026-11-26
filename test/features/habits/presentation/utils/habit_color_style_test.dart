@@ -39,7 +39,9 @@ void main() {
             color.tileBackground(colors),
           );
 
-          expect(ratio, greaterThanOrEqualTo(4.5));
+          // An icon is non-text content, so WCAG asks for 3:1 (4.5 is the
+          // text threshold).
+          expect(ratio, greaterThanOrEqualTo(3));
         });
       }
     });
