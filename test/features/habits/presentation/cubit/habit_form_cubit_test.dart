@@ -202,6 +202,28 @@ void main() {
         expect(cubit.state.daysError, isNull);
         expect(cubit.state.days, {Weekday.saturday});
       });
+
+      test('select all clears a full week, then selects it again', () {
+        final cubit = newHabit();
+        expect(cubit.state.allDaysSelected, isTrue);
+
+        cubit.allDaysToggled();
+        expect(cubit.state.allDaysSelected, isFalse);
+        expect(cubit.state.days, isEmpty);
+        expect(cubit.state.daysError, ValidationReason.noDaysSelected);
+
+        cubit.allDaysToggled();
+        expect(cubit.state.days, HabitSchedule.everyDay().days);
+        expect(cubit.state.daysError, isNull);
+      });
+
+      test('select all completes a partly selected week', () {
+        final cubit = (newHabit()..dayToggled(Weekday.friday))
+          ..allDaysToggled();
+
+        expect(cubit.state.days, HabitSchedule.everyDay().days);
+        expect(cubit.state.isDirty, isFalse);
+      });
     });
 
     test('icon: a known key is selected, an unknown one is ignored', () {

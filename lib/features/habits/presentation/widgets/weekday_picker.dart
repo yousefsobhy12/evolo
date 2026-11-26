@@ -93,9 +93,6 @@ class _DayOption extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isSelected ? colors.ink : colors.dayPill,
-                    border: Border.all(
-                      color: isSelected ? colors.ink : colors.outline,
-                    ),
                   ),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,

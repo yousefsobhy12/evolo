@@ -96,6 +96,8 @@ final class HabitFormState extends Equatable {
   bool get canDecrementTarget => dailyTarget > Habit.minDailyTarget;
   bool get canIncrementTarget => dailyTarget < Habit.maxDailyTarget;
 
+  bool get allDaysSelected => days.length == Weekday.values.length;
+
   /// Inputs can be changed.
   bool get isEditable => status == HabitFormStatus.ready;
 

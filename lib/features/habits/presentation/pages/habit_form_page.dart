@@ -7,15 +7,19 @@ import 'package:evolo/core/l10n/l10n.dart';
 import 'package:evolo/core/router/app_routes.dart';
 import 'package:evolo/core/theme/app_radius.dart';
 import 'package:evolo/core/theme/app_spacing.dart';
+import 'package:evolo/core/widgets/circle_icon_button.dart';
 import 'package:evolo/core/widgets/evolo_button.dart';
 import 'package:evolo/core/widgets/max_content_width.dart';
+import 'package:evolo/core/widgets/page_header.dart';
+import 'package:evolo/core/widgets/page_status_bar.dart';
 import 'package:evolo/core/widgets/state_message.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
-import 'package:evolo/features/habits/domain/entities/habit_schedule.dart';
 import 'package:evolo/features/habits/presentation/cubit/habit_form_cubit.dart';
 import 'package:evolo/features/habits/presentation/cubit/habit_form_state.dart';
-import 'package:evolo/features/habits/presentation/widgets/habit_color_picker.dart';
-import 'package:evolo/features/habits/presentation/widgets/habit_icon_picker.dart';
+import 'package:evolo/features/habits/presentation/utils/schedule_summary.dart';
+import 'package:evolo/features/habits/presentation/widgets/calendar_illustration.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_appearance_field.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_appearance_sheet.dart';
 import 'package:evolo/features/habits/presentation/widgets/target_stepper.dart';
 import 'package:evolo/features/habits/presentation/widgets/weekday_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -153,6 +157,18 @@ class _HabitFormPageState extends State<HabitFormPage> {
     return discard ?? false;
   }
 
+  /// Leaves the page, asking first when there is something to lose. Used by
+  /// the system back (when it is blocked) and by the close button.
+  Future<void> _requestClose(BuildContext context) async {
+    final state = context.read<HabitFormCubit>().state;
+    if (state.isBusy) return;
+    if (!_canPop(state)) {
+      final discard = await _confirmDiscard(context);
+      if (!discard || !context.mounted) return;
+    }
+    _leave(context);
+  }
+
   /// Back is free unless there is something to lose. While a save or delete
   /// runs it is blocked.
   bool _canPop(HabitFormState state) => switch (state.status) {
@@ -179,21 +195,32 @@ class _HabitFormPageState extends State<HabitFormPage> {
           return PopScope(
             canPop: _canPop(state),
             onPopInvokedWithResult: (didPop, _) async {
-              if (didPop || state.isBusy) return;
-              final discard = await _confirmDiscard(context);
-              if (discard && context.mounted) _leave(context);
+              if (!didPop) await _requestClose(context);
             },
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  state.isEditing ? l10n.editHabitTitle : l10n.newHabitTitle,
-                ),
-              ),
-              body: MaxContentWidth(
-                child: _Body(
-                  state: state,
-                  nameController: _nameController,
-                  onDelete: () => _confirmDelete(context, state),
+            child: PageStatusBar(
+              child: Scaffold(
+                body: SafeArea(
+                  bottom: false,
+                  child: MaxContentWidth(
+                    child: _Body(
+                      state: state,
+                      header: PageHeader(
+                        title: state.isEditing
+                            ? l10n.editHabitTitle
+                            : l10n.newHabitTitle,
+                        trailing: CircleIconButton(
+                          icon: Icons.close,
+                          tooltip: MaterialLocalizations.of(context)
+                              .closeButtonTooltip,
+                          onPressed: state.isBusy
+                              ? null
+                              : () => unawaited(_requestClose(context)),
+                        ),
+                      ),
+                      nameController: _nameController,
+                      onDelete: () => _confirmDelete(context, state),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -222,43 +249,22 @@ void _leave(BuildContext context, [String? message]) {
 class _Body extends StatelessWidget {
   const new({
     required this.state,
+    required this.header,
     required this.nameController,
     required this.onDelete,
   });
 
   final HabitFormState state;
+  final Widget header;
   final TextEditingController nameController;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final cubit = context.read<HabitFormCubit>();
-
     switch (state.status) {
-      case HabitFormStatus.loading:
-        return Center(
-          child: CircularProgressIndicator(semanticsLabel: l10n.loading),
-        );
-      case HabitFormStatus.loadFailed:
-        if (state.failure is NotFoundFailure) {
-          return StateMessage(
-            icon: Icons.search_off,
-            title: l10n.habitNotFoundTitle,
-            message: l10n.habitNotFoundMessage,
-            action: FilledButton(
-              onPressed: () => _leave(context),
-              child: Text(l10n.goBack),
-            ),
-          );
-        }
-        return StateMessage(
-          icon: Icons.error_outline,
-          iconColor: context.colorScheme.error,
-          title: l10n.loadErrorTitle,
-          message: l10n.loadErrorMessage,
-          action: FilledButton(onPressed: cubit.retry, child: Text(l10n.retry)),
-        );
+      case HabitFormStatus.loading || HabitFormStatus.loadFailed:
+        // The header stays, so the page can always be closed.
+        return Column(children: [header, _status(context).expanded()]);
       case HabitFormStatus.ready ||
           HabitFormStatus.saving ||
           HabitFormStatus.deleting ||
@@ -267,21 +273,55 @@ class _Body extends StatelessWidget {
           HabitFormStatus.unchanged:
         return _Form(
           state: state,
+          header: header,
           nameController: nameController,
           onDelete: onDelete,
         );
     }
+  }
+
+  Widget _status(BuildContext context) {
+    final l10n = context.l10n;
+
+    if (state.status == HabitFormStatus.loading) {
+      return Center(
+        child: CircularProgressIndicator(semanticsLabel: l10n.loading),
+      );
+    }
+    if (state.failure is NotFoundFailure) {
+      return StateMessage(
+        icon: Icons.search_off,
+        title: l10n.habitNotFoundTitle,
+        message: l10n.habitNotFoundMessage,
+        action: FilledButton(
+          onPressed: () => _leave(context),
+          child: Text(l10n.goBack),
+        ),
+      );
+    }
+    return StateMessage(
+      icon: Icons.error_outline,
+      iconColor: context.colorScheme.error,
+      title: l10n.loadErrorTitle,
+      message: l10n.loadErrorMessage,
+      action: FilledButton(
+        onPressed: context.read<HabitFormCubit>().retry,
+        child: Text(l10n.retry),
+      ),
+    );
   }
 }
 
 class _Form extends StatelessWidget {
   const new({
     required this.state,
+    required this.header,
     required this.nameController,
     required this.onDelete,
   });
 
   final HabitFormState state;
+  final Widget header;
   final TextEditingController nameController;
   final VoidCallback onDelete;
 
@@ -296,75 +336,95 @@ class _Form extends StatelessWidget {
       children: [
         ListView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            AppSpacing.screen,
-            AppSpacing.s8,
-            AppSpacing.screen,
-            AppSpacing.s24,
-          ),
+          padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.s24),
           children: [
-            _NameField(
-              state: state,
-              controller: nameController,
-              onChanged: cubit.nameChanged,
-            ),
-            AppSpacing.s24.vSpace,
-            _Section(
-              title: l10n.habitIconLabel,
-              child: HabitIconPicker(
-                selectedKey: state.iconKey,
-                color: state.color,
-                onSelected: cubit.iconSelected,
-                enabled: editable,
+            // Brings its own side padding, so it sits outside the Padding.
+            header,
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.screen,
               ),
-            ),
-            _Section(
-              title: l10n.habitColorLabel,
-              child: HabitColorPicker(
-                selected: state.color,
-                onSelected: cubit.colorSelected,
-                enabled: editable,
-              ),
-            ),
-            _Section(
-              title: l10n.habitTargetLabel,
-              child: TargetStepper(
-                value: state.dailyTarget,
-                canDecrement: state.canDecrementTarget,
-                canIncrement: state.canIncrementTarget,
-                onDecrement: cubit.decrementTarget,
-                onIncrement: cubit.incrementTarget,
-                enabled: editable,
-              ),
-            ),
-            _Section(
-              title: l10n.habitDaysLabel,
-              child: _DaysSection(state: state),
-            ),
-            if (state.isEditing) ...[
-              AppSpacing.s8.vSpace,
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: TextButton.icon(
-                  onPressed: editable ? onDelete : null,
-                  style: TextButton.styleFrom(
-                    foregroundColor: colors.error,
-                    minimumSize: const Size(0, 48),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Center(child: CalendarIllustration()),
+                  AppSpacing.s24.vSpace,
+                  _Section(
+                    title: l10n.habitNameLabel,
+                    child: _NameField(
+                      state: state,
+                      controller: nameController,
+                      onChanged: cubit.nameChanged,
+                    ),
                   ),
-                  icon: state.status == HabitFormStatus.deleting
-                      ? SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: colors.error,
-                            semanticsLabel: l10n.loading,
-                          ),
-                        )
-                      : const Icon(Icons.delete_outline),
-                  label: Text(l10n.deleteHabit),
-                ),
+                  _Section(
+                    title: l10n.habitAppearanceLabel,
+                    child: HabitAppearanceField(
+                      iconKey: state.iconKey,
+                      color: state.color,
+                      onPressed: editable
+                          ? () {
+                              // Closes the keyboard, and stops it from
+                              // coming back when the sheet closes.
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              unawaited(showHabitAppearanceSheet(context));
+                            }
+                          : null,
+                    ),
+                  ),
+                  _Section(
+                    title: l10n.habitTargetLabel,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colors.surface,
+                        borderRadius: BorderRadius.circular(AppRadius.input),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.all(AppSpacing.s8),
+                        child: TargetStepper(
+                          value: state.dailyTarget,
+                          canDecrement: state.canDecrementTarget,
+                          canIncrement: state.canIncrementTarget,
+                          onDecrement: cubit.decrementTarget,
+                          onIncrement: cubit.incrementTarget,
+                          enabled: editable,
+                        ),
+                      ),
+                    ),
+                  ),
+                  _Section(
+                    title: l10n.habitDaysLabel,
+                    trailing: _SelectAll(
+                      isSelected: state.allDaysSelected,
+                      onPressed: editable ? cubit.allDaysToggled : null,
+                    ),
+                    child: _DaysSection(state: state),
+                  ),
+                  if (state.isEditing)
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton.icon(
+                        onPressed: editable ? onDelete : null,
+                        style: TextButton.styleFrom(
+                          foregroundColor: colors.error,
+                          minimumSize: const Size(0, 48),
+                        ),
+                        icon: state.status == HabitFormStatus.deleting
+                            ? SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: colors.error,
+                                  semanticsLabel: l10n.loading,
+                                ),
+                              )
+                            : const Icon(Icons.delete_outline),
+                        label: Text(l10n.deleteHabit),
+                      ),
+                    ),
+                ],
               ),
-            ],
+            ),
           ],
         ).expanded(),
         // Outside the scroll, so Save stays reachable above the keyboard.
@@ -423,26 +483,30 @@ class _NameField extends StatelessWidget {
       _ => null,
     };
 
-    return TextField(
-      controller: controller,
-      enabled: state.isEditable,
-      autofocus: !state.isEditing,
-      textInputAction: TextInputAction.done,
-      textCapitalization: TextCapitalization.sentences,
-      // By the language of what is typed (null while it has no letters yet:
-      // then the app's own direction applies).
-      textDirection: state.name.detectedTextDirection,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        labelText: l10n.habitNameLabel,
-        hintText: l10n.habitNameHint,
-        errorText: errorText,
-        counter: Text(
-          context.formatters.digits(
-            l10n.habitNameCounter(state.nameLength, Habit.maxNameLength),
-          ),
-          style: context.textTheme.bodySmall?.copyWith(
-            color: tooLong ? colors.error : colors.textSecondary,
+    // The visible label sits above the field, so the field gets its name for
+    // screen readers here.
+    return Semantics(
+      label: l10n.habitNameLabel,
+      child: TextField(
+        controller: controller,
+        enabled: state.isEditable,
+        autofocus: !state.isEditing,
+        textInputAction: TextInputAction.done,
+        textCapitalization: TextCapitalization.sentences,
+        // By the language of what is typed (null while it has no letters yet:
+        // then the app's own direction applies).
+        textDirection: state.name.detectedTextDirection,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          hintText: l10n.habitNameHint,
+          errorText: errorText,
+          counter: Text(
+            context.formatters.digits(
+              l10n.habitNameCounter(state.nameLength, Habit.maxNameLength),
+            ),
+            style: context.textTheme.bodySmall?.copyWith(
+              color: tooLong ? colors.error : colors.textSecondary,
+            ),
           ),
         ),
       ),
@@ -451,10 +515,13 @@ class _NameField extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const new({required this.title, required this.child});
+  const new({required this.title, required this.child, this.trailing});
 
   final String title;
   final Widget child;
+
+  /// At the end of the title line.
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -463,13 +530,55 @@ class _Section extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Semantics(
-            header: true,
-            child: Text(title, style: context.textTheme.titleMedium),
+          // A Wrap, not a Row: with a big font the trailing widget drops to
+          // its own line instead of overflowing.
+          SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacing.s8,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(title, style: context.textTheme.titleMedium),
+                ),
+                ?trailing,
+              ],
+            ),
           ),
           AppSpacing.s12.vSpace,
           child,
         ],
+      ),
+    );
+  }
+}
+
+/// A checkbox-like text button: checked when every day is selected.
+class _SelectAll extends StatelessWidget {
+  const new({required this.isSelected, required this.onPressed});
+
+  final bool isSelected;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    // Merged, so a screen reader hears one control: name + checked state.
+    return MergeSemantics(
+      child: Semantics(
+        checked: isSelected,
+        child: TextButton.icon(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: context.colors.textAccent,
+            minimumSize: const Size(48, 48),
+          ),
+          icon: Icon(
+            isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+          ),
+          label: Text(context.l10n.selectAllDays),
+        ),
       ),
     );
   }
@@ -506,7 +615,7 @@ class _DaysSection extends StatelessWidget {
           )
         else
           Text(
-            _summary(context, state.days),
+            scheduleSummary(context, state.days),
             style: caption?.copyWith(color: colors.textSecondary),
           ),
         if (state.scheduleChanged) ...[
@@ -535,21 +644,5 @@ class _DaysSection extends StatelessWidget {
         ],
       ],
     );
-  }
-
-  /// "Every day", or the chosen days in picker order ("Sat, Mon, Wed").
-  String _summary(BuildContext context, Set<Weekday> days) {
-    if (days.length == Weekday.values.length) {
-      return context.l10n.daysEveryDay;
-    }
-    final formatters = context.formatters;
-    final separator = Localizations.localeOf(context).languageCode == 'ar'
-        ? '، '
-        : ', ';
-    return [
-      for (final day in WeekdayPicker.displayOrder)
-        if (days.contains(day))
-          formatters.weekdayShort(DateTime(2024, 1, 1 + day.index)),
-    ].join(separator);
   }
 }

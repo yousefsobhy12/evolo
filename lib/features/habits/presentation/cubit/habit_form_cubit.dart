@@ -135,6 +135,16 @@ class HabitFormCubit extends Cubit<HabitFormState> {
     _publish();
   }
 
+  /// The "Select all" toggle: selects every day, or clears them all when
+  /// every day is already selected (a shortcut to picking just a few).
+  void allDaysToggled() {
+    if (!_isEditable) return;
+    _days = _days.length == Weekday.values.length
+        ? <Weekday>{}
+        : HabitSchedule.everyDay().days;
+    _publish();
+  }
+
   // --- Save ----------------------------------------------------------------
 
   /// Validates and then creates (add) or updates (edit) the habit.

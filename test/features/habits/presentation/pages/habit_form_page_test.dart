@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:evolo/core/errors/failure.dart';
 import 'package:evolo/core/router/app_routes.dart';
+import 'package:evolo/core/widgets/circle_icon_button.dart';
 import 'package:evolo/core/widgets/evolo_button.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
 import 'package:evolo/features/habits/domain/entities/habit_color.dart';
@@ -10,6 +11,10 @@ import 'package:evolo/features/habits/domain/repositories/habit_repository.dart'
 import 'package:evolo/features/habits/presentation/cubit/habit_form_cubit.dart';
 import 'package:evolo/features/habits/presentation/pages/habit_form_page.dart';
 import 'package:evolo/features/habits/presentation/utils/habit_icons.dart';
+import 'package:evolo/features/habits/presentation/widgets/calendar_illustration.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_appearance_field.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_color_picker.dart';
+import 'package:evolo/features/habits/presentation/widgets/habit_icon_picker.dart';
 import 'package:evolo/features/habits/presentation/widgets/weekday_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -117,6 +122,145 @@ void main() {
   TextField nameField(WidgetTester tester) =>
       tester.widget<TextField>(find.byType(TextField));
 
+  Finder closeButton() => find.byType(CircleIconButton);
+
+  group('the design', () {
+    testWidgets('has a big title, a close button and the calendar', (
+      tester,
+    ) async {
+      await openForm(tester);
+
+      expect(find.byType(AppBar), findsNothing);
+      expect(closeButton(), findsOneWidget);
+      expect(find.byTooltip('Close'), findsOneWidget);
+      expect(find.byType(CalendarIllustration), findsOneWidget);
+      expect(find.text('Set a goal'), findsOneWidget);
+      expect(find.text('Repeat days'), findsOneWidget);
+      expect(find.text('Save Habit'), findsOneWidget);
+    });
+
+    testWidgets('the name label is above the field, not inside it', (
+      tester,
+    ) async {
+      await openForm(tester);
+
+      expect(nameField(tester).decoration!.labelText, isNull);
+      expect(
+        tester.getBottomLeft(find.text('Name')).dy,
+        lessThan(tester.getTopLeft(find.byType(TextField)).dy),
+      );
+    });
+
+    testWidgets('the field has a line for focus and errors only', (
+      tester,
+    ) async {
+      await openForm(tester);
+
+      final theme = Theme.of(tester.element(find.byType(TextField)))
+          .inputDecorationTheme;
+      expect(theme.enabledBorder!.borderSide, BorderSide.none);
+      expect(theme.disabledBorder!.borderSide, BorderSide.none);
+      expect(theme.focusedBorder!.borderSide.width, 2);
+      expect(theme.errorBorder!.borderSide.width, 1);
+    });
+
+    testWidgets('the pickers are not on the page itself', (tester) async {
+      await openForm(tester);
+
+      expect(find.byType(HabitIconPicker), findsNothing);
+      expect(find.byType(HabitColorPicker), findsNothing);
+    });
+  });
+
+  group('icon and color sheet', () {
+    testWidgets('a choice shows on the form and is saved', (tester) async {
+      when(anyCreate).thenAnswer((_) async => Right<Failure, Habit>(stored));
+      await openForm(tester);
+      await tester.enterText(find.byType(TextField), 'Gym');
+      await tester.pump();
+
+      await tester.tap(find.byType(HabitAppearanceField));
+      await settle(tester);
+      await tester.tap(find.byKey(const ValueKey('color-pink')));
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const ValueKey('icon-book')));
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('icon-book')));
+      await tester.pump();
+      await tester.tap(find.text('Done'));
+      await settle(tester);
+
+      expect(find.byType(HabitIconPicker), findsNothing);
+      final field = tester.widget<HabitAppearanceField>(
+        find.byType(HabitAppearanceField),
+      );
+      expect(field.iconKey, 'book');
+      expect(field.color, HabitColor.pink);
+      expect(find.text('Reading, Pink'), findsOneWidget);
+
+      await tester.tap(find.byType(EvoloButton));
+      await settle(tester);
+
+      verify(
+        () => repository.createHabit(
+          name: 'Gym',
+          iconKey: 'book',
+          color: HabitColor.pink,
+          dailyTarget: 1,
+          schedule: HabitSchedule.everyDay(),
+        ),
+      ).called(1);
+    });
+
+    for (final scale in [1.0, 1.5]) {
+      testWidgets('fits a 360 wide phone in Arabic Dark x$scale', (
+        tester,
+      ) async {
+        await openForm(
+          tester,
+          locale: const Locale('ar'),
+          brightness: Brightness.dark,
+          textScale: scale,
+          size: const Size(360, 640),
+        );
+
+        await tester.ensureVisible(find.byType(HabitAppearanceField));
+        await tester.pump();
+        await tester.tap(find.byType(HabitAppearanceField));
+        await settle(tester);
+
+        expect(find.byType(HabitIconPicker), findsOneWidget);
+        // Done is outside the scroll, so it is always on screen.
+        await tester.tap(find.text('تم'));
+        await settle(tester);
+
+        expect(find.byType(HabitIconPicker), findsNothing);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  });
+
+  group('select all days', () {
+    testWidgets('clears every day, then selects them all again', (
+      tester,
+    ) async {
+      await openForm(tester);
+      expect(find.byIcon(Icons.check_box), findsOneWidget);
+
+      await tester.tap(find.text('Select all'));
+      await settle(tester);
+
+      expect(find.byIcon(Icons.check_box_outline_blank), findsOneWidget);
+      expect(find.text('Pick at least one day'), findsOneWidget);
+
+      await tester.tap(find.text('Select all'));
+      await settle(tester);
+
+      expect(find.byIcon(Icons.check_box), findsOneWidget);
+      expect(find.text('Every day'), findsOneWidget);
+    });
+  });
+
   group('adding', () {
     testWidgets('opens clean: title, no error and no delete button', (
       tester,
@@ -203,7 +347,9 @@ void main() {
       );
 
       await tester.tap(find.byType(EvoloButton));
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(closeButton());
+      // The system back is blocked too.
+      await tester.binding.handlePopRoute();
       await settle(tester);
 
       expect(find.byType(HabitFormPage), findsOneWidget);
@@ -326,7 +472,7 @@ void main() {
     ) async {
       await openForm(tester);
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(closeButton());
       await settle(tester);
 
       expect(find.byType(AlertDialog), findsNothing);
@@ -340,7 +486,7 @@ void main() {
       await tester.enterText(find.byType(TextField), 'رياضة');
       await tester.pump();
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(closeButton());
       await settle(tester);
       expect(find.text('تجاهل التغييرات؟'), findsOneWidget);
 
@@ -349,13 +495,27 @@ void main() {
       expect(find.byType(HabitFormPage), findsOneWidget);
       expect(nameField(tester).controller!.text, 'رياضة');
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(closeButton());
       await settle(tester);
       await tester.tap(find.text('تجاهل'));
       await settle(tester);
 
       expect(find.byType(HabitFormPage), findsNothing);
       verifyNever(anyCreate);
+    });
+  });
+
+  group('the system back', () {
+    testWidgets('with changes it asks before leaving', (tester) async {
+      await openForm(tester);
+      await tester.enterText(find.byType(TextField), 'Gym');
+      await tester.pump();
+
+      await tester.binding.handlePopRoute();
+      await settle(tester);
+
+      expect(find.text('Discard changes?'), findsOneWidget);
+      expect(find.byType(HabitFormPage), findsOneWidget);
     });
   });
 
