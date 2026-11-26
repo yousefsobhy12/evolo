@@ -2,7 +2,9 @@ import 'package:evolo/core/extensions/extensions.dart';
 import 'package:evolo/core/l10n/l10n.dart';
 import 'package:evolo/core/theme/app_radius.dart';
 import 'package:evolo/core/theme/app_spacing.dart';
+import 'package:evolo/core/widgets/circle_icon_button.dart';
 import 'package:evolo/core/widgets/max_content_width.dart';
+import 'package:evolo/core/widgets/page_header.dart';
 import 'package:evolo/features/reminders/presentation/widgets/reminder_card.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -45,6 +47,17 @@ class ThemeShowcasePage extends StatelessWidget {
             vertical: AppSpacing.s16,
           ),
           children: [
+            _Section(
+              title: 'Page header',
+              child: PageHeader(
+                title: isArabic ? 'عادة جديدة' : 'New habit',
+                trailing: CircleIconButton(
+                  icon: Icons.close,
+                  tooltip: isArabic ? 'إغلاق' : 'Close',
+                  onPressed: () {},
+                ),
+              ),
+            ),
             _Section(
               title: 'Typography',
               child: _TypographyBlock(isArabic: isArabic),
