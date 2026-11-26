@@ -49,7 +49,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goHome => 'العودة للرئيسية';
 
   @override
-  String get todayTitle => 'اليوم';
+  String get greetingMorning => 'صباح الخير';
+
+  @override
+  String get greetingAfternoon => 'مساء الخير';
+
+  @override
+  String get greetingEvening => 'مساء الخير';
 
   @override
   String get todayDailyRoutine => 'روتينك اليومي';
@@ -216,7 +222,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get colorPink => 'وردي';
 
   @override
-  String get habitTargetLabel => 'الهدف اليومي';
+  String get habitTargetLabel => 'حدّد هدفك';
 
   @override
   String habitTargetSummary(int count) {
@@ -239,7 +245,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get decreaseTarget => 'إنقاص الهدف';
 
   @override
-  String get habitDaysLabel => 'التكرار';
+  String get habitDaysLabel => 'أيام التكرار';
 
   @override
   String get daysEveryDay => 'كل يوم';
@@ -252,7 +258,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تغيير الأيام يغيّر أيضًا طريقة احتساب الأيام السابقة في سلسلتك.';
 
   @override
-  String get saveHabit => 'حفظ';
+  String get saveHabit => 'حفظ العادة';
 
   @override
   String get savingHabit => 'جارٍ الحفظ';
@@ -403,4 +409,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get iconNameCall => 'اتصال';
+
+  @override
+  String get habitAppearanceLabel => 'الأيقونة واللون';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get selectAllDays => 'تحديد الكل';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get allHabitsTitle => 'كل العادات';
 }

@@ -41,9 +41,17 @@
     "@goHome": {
         "description": "Button on the route error screen."
     },
-    "todayTitle": "Today",
-    "@todayTitle": {
-        "description": "Title of the Today screen."
+    "greetingMorning": "Good morning",
+    "@greetingMorning": {
+        "description": "Title of the Today screen from 5:00 to 11:59."
+    },
+    "greetingAfternoon": "Good afternoon",
+    "@greetingAfternoon": {
+        "description": "Title of the Today screen from 12:00 to 16:59."
+    },
+    "greetingEvening": "Good evening",
+    "@greetingEvening": {
+        "description": "Title of the Today screen from 17:00 to 4:59."
     },
     "todayDailyRoutine": "Daily routine",
     "@todayDailyRoutine": {
@@ -51,11 +59,11 @@
     },
     "previousWeek": "Previous week",
     "@previousWeek": {
-        "description": "Tooltip and screen-reader label of the button that shows the week before."
+        "description": "Screen-reader action that shows the week before."
     },
     "nextWeek": "Next week",
     "@nextWeek": {
-        "description": "Tooltip and screen-reader label of the button that shows the week after."
+        "description": "Screen-reader action that shows the week after."
     },
     "backToToday": "Back to today",
     "@backToToday": {
@@ -251,7 +259,7 @@
     "@colorPink": {
         "description": "Name of the pink habit color (screen readers)."
     },
-    "habitTargetLabel": "Daily goal",
+    "habitTargetLabel": "Set a goal",
     "@habitTargetLabel": {
         "description": "Section label of the daily goal stepper."
     },
@@ -272,7 +280,7 @@
     "@decreaseTarget": {
         "description": "Tooltip and screen-reader label of the - button of the daily goal stepper."
     },
-    "habitDaysLabel": "Repeat",
+    "habitDaysLabel": "Repeat days",
     "@habitDaysLabel": {
         "description": "Section label of the weekday picker."
     },
@@ -288,7 +296,7 @@
     "@scheduleChangeWarning": {
         "description": "Notice shown when editing a habit's days: the new schedule applies to the whole history."
     },
-    "saveHabit": "Save",
+    "saveHabit": "Save Habit",
     "@saveHabit": {
         "description": "Button that saves the habit form."
     },
@@ -492,5 +500,25 @@
     "iconNameCall": "Call",
     "@iconNameCall": {
         "description": "Name of the call habit icon, read by screen readers in the icon picker."
+    },
+    "habitAppearanceLabel": "Icon and color",
+    "@habitAppearanceLabel": {
+        "description": "Label of the form field that opens the icon and color pickers."
+    },
+    "done": "Done",
+    "@done": {
+        "description": "Button that closes the icon and color sheet."
+    },
+    "selectAllDays": "Select all",
+    "@selectAllDays": {
+        "description": "Checkbox-like button that selects or clears all seven repeat days."
+    },
+    "seeAll": "See all",
+    "@seeAll": {
+        "description": "Button on Today that opens the list of every habit."
+    },
+    "allHabitsTitle": "All habits",
+    "@allHabitsTitle": {
+        "description": "Title of the screen that lists every habit."
     }
 }

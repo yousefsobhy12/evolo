@@ -41,9 +41,6 @@ class AppFormatters {
   String dateMedium(DateTime date) =>
       digits(DateFormat.yMMMd(locale.languageCode).format(date));
 
-  String monthYear(DateTime date) =>
-      digits(DateFormat.yMMMM(locale.languageCode).format(date));
-
   String time(DateTime date) =>
       digits(DateFormat.jm(locale.languageCode).format(date));
 

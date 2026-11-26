@@ -152,11 +152,23 @@ abstract class AppLocalizations {
   /// **'Go home'**
   String get goHome;
 
-  /// Title of the Today screen.
+  /// Title of the Today screen from 5:00 to 11:59.
   ///
   /// In en, this message translates to:
-  /// **'Today'**
-  String get todayTitle;
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// Title of the Today screen from 12:00 to 16:59.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// Title of the Today screen from 17:00 to 4:59.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
 
   /// Section heading above the list of habits on the Today screen.
   ///
@@ -164,13 +176,13 @@ abstract class AppLocalizations {
   /// **'Daily routine'**
   String get todayDailyRoutine;
 
-  /// Tooltip and screen-reader label of the button that shows the week before.
+  /// Screen-reader action that shows the week before.
   ///
   /// In en, this message translates to:
   /// **'Previous week'**
   String get previousWeek;
 
-  /// Tooltip and screen-reader label of the button that shows the week after.
+  /// Screen-reader action that shows the week after.
   ///
   /// In en, this message translates to:
   /// **'Next week'**
@@ -401,7 +413,7 @@ abstract class AppLocalizations {
   /// Section label of the daily goal stepper.
   ///
   /// In en, this message translates to:
-  /// **'Daily goal'**
+  /// **'Set a goal'**
   String get habitTargetLabel;
 
   /// The daily goal as a phrase, shown between the - and + buttons.
@@ -425,7 +437,7 @@ abstract class AppLocalizations {
   /// Section label of the weekday picker.
   ///
   /// In en, this message translates to:
-  /// **'Repeat'**
+  /// **'Repeat days'**
   String get habitDaysLabel;
 
   /// Summary under the weekday picker when all seven days are selected.
@@ -449,7 +461,7 @@ abstract class AppLocalizations {
   /// Button that saves the habit form.
   ///
   /// In en, this message translates to:
-  /// **'Save'**
+  /// **'Save Habit'**
   String get saveHabit;
 
   /// Screen-reader label of the save button while saving.
@@ -745,6 +757,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Call'**
   String get iconNameCall;
+
+  /// Label of the form field that opens the icon and color pickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon and color'**
+  String get habitAppearanceLabel;
+
+  /// Button that closes the icon and color sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// Checkbox-like button that selects or clears all seven repeat days.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAllDays;
+
+  /// Button on Today that opens the list of every habit.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// Title of the screen that lists every habit.
+  ///
+  /// In en, this message translates to:
+  /// **'All habits'**
+  String get allHabitsTitle;
 }
 
 class _AppLocalizationsDelegate

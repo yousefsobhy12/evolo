@@ -46,7 +46,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goHome => 'Go home';
 
   @override
-  String get todayTitle => 'Today';
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingEvening => 'Good evening';
 
   @override
   String get todayDailyRoutine => 'Daily routine';
@@ -206,7 +212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get colorPink => 'Pink';
 
   @override
-  String get habitTargetLabel => 'Daily goal';
+  String get habitTargetLabel => 'Set a goal';
 
   @override
   String habitTargetSummary(int count) {
@@ -227,7 +233,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decreaseTarget => 'Decrease goal';
 
   @override
-  String get habitDaysLabel => 'Repeat';
+  String get habitDaysLabel => 'Repeat days';
 
   @override
   String get daysEveryDay => 'Every day';
@@ -240,7 +246,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Changing the days also changes how past days count toward your streak.';
 
   @override
-  String get saveHabit => 'Save';
+  String get saveHabit => 'Save Habit';
 
   @override
   String get savingHabit => 'Saving';
@@ -391,4 +397,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get iconNameCall => 'Call';
+
+  @override
+  String get habitAppearanceLabel => 'Icon and color';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get selectAllDays => 'Select all';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get allHabitsTitle => 'All habits';
 }
