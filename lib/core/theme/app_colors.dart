@@ -36,6 +36,10 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.barRust,
     required this.barOlive,
     required this.barPink,
+    required this.onBarBrown,
+    required this.onBarRust,
+    required this.onBarOlive,
+    required this.onBarPink,
     required this.barTrack,
     required this.checkRing,
     required this.error,
@@ -71,6 +75,13 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color barRust;
   final Color barOlive;
   final Color barPink;
+
+  /// Number color on each Pill bar (S8). Chosen per bar, per theme, so the
+  /// number reaches 4.5:1 on its own fill (white fails on olive and pink).
+  final Color onBarBrown;
+  final Color onBarRust;
+  final Color onBarOlive;
+  final Color onBarPink;
   final Color barTrack;
   final Color checkRing;
   final Color error;
@@ -101,6 +112,10 @@ class AppColors extends ThemeExtension<AppColors> {
     barRust: Color(0xFF98460E),
     barOlive: Color(0xFF8BA231),
     barPink: Color(0xFFE586CA),
+    onBarBrown: Color(0xFFFFFFFF), // 10.92:1
+    onBarRust: Color(0xFFFFFFFF), // 6.53:1
+    onBarOlive: Color(0xFF2B1810), // 5.89:1
+    onBarPink: Color(0xFF2B1810), // 6.93:1
     barTrack: Color(0xFFEFE6E1),
     // Design value was 0xFFC9C4C0 (~1.8:1, fails 3:1 for UI components).
     checkRing: Color(0xFF8C8580),
@@ -146,12 +161,22 @@ class AppColors extends ThemeExtension<AppColors> {
     barRust: const Color(0xFFC2631F), // lightened to reach 3:1 on surface
     barOlive: const Color(0xFF8BA231),
     barPink: const Color(0xFFE586CA),
+    onBarBrown: const Color(0xFFFFFFFF), // 4.84:1
+    // White on the lightened rust is 4.12:1 and #2B1810 is 4.11:1: both fail.
+    onBarRust: const Color(0xFF140C09), // 4.69:1
+    onBarOlive: const Color(0xFF2B1810), // 5.89:1
+    onBarPink: const Color(0xFF2B1810), // 6.93:1
     barTrack: const Color(0xFF36271F),
     checkRing: const Color(0xFF7A6B63),
     error: const Color(0xFFFF8A80),
     onError: const Color(0xFF1C1411),
     outline: const Color(0xFF7A6B63),
   );
+
+  /// The hatch lines on [barTrack]. Derived (not a token) so it always
+  /// follows the track, and tested so a number on it stays readable.
+  Color get barTrackStripe =>
+      Color.alphaBlend(textPrimary.withValues(alpha: 0.08), barTrack);
 
   @override
   AppColors copyWith({
@@ -179,6 +204,10 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? barRust,
     Color? barOlive,
     Color? barPink,
+    Color? onBarBrown,
+    Color? onBarRust,
+    Color? onBarOlive,
+    Color? onBarPink,
     Color? barTrack,
     Color? checkRing,
     Color? error,
@@ -210,6 +239,10 @@ class AppColors extends ThemeExtension<AppColors> {
       barRust: barRust ?? this.barRust,
       barOlive: barOlive ?? this.barOlive,
       barPink: barPink ?? this.barPink,
+      onBarBrown: onBarBrown ?? this.onBarBrown,
+      onBarRust: onBarRust ?? this.onBarRust,
+      onBarOlive: onBarOlive ?? this.onBarOlive,
+      onBarPink: onBarPink ?? this.onBarPink,
       barTrack: barTrack ?? this.barTrack,
       checkRing: checkRing ?? this.checkRing,
       error: error ?? this.error,
@@ -246,6 +279,10 @@ class AppColors extends ThemeExtension<AppColors> {
       barRust: Color.lerp(barRust, other.barRust, t)!,
       barOlive: Color.lerp(barOlive, other.barOlive, t)!,
       barPink: Color.lerp(barPink, other.barPink, t)!,
+      onBarBrown: Color.lerp(onBarBrown, other.onBarBrown, t)!,
+      onBarRust: Color.lerp(onBarRust, other.onBarRust, t)!,
+      onBarOlive: Color.lerp(onBarOlive, other.onBarOlive, t)!,
+      onBarPink: Color.lerp(onBarPink, other.onBarPink, t)!,
       barTrack: Color.lerp(barTrack, other.barTrack, t)!,
       checkRing: Color.lerp(checkRing, other.checkRing, t)!,
       error: Color.lerp(error, other.error, t)!,

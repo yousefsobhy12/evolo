@@ -72,6 +72,39 @@ void main() {
         expect(contrastRatio(c.checkRing, c.surface), greaterThanOrEqualTo(3));
       });
 
+      test('the number on each Pill bar is readable on that bar', () {
+        expect(
+          contrastRatio(c.onBarBrown, c.barBrown),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          contrastRatio(c.onBarRust, c.barRust),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          contrastRatio(c.onBarOlive, c.barOlive),
+          greaterThanOrEqualTo(4.5),
+        );
+        expect(
+          contrastRatio(c.onBarPink, c.barPink),
+          greaterThanOrEqualTo(4.5),
+        );
+      });
+
+      test(
+        'a number on the empty bar track (and its hatch lines) is readable',
+        () {
+          expect(
+            contrastRatio(c.textPrimary, c.barTrack),
+            greaterThanOrEqualTo(4.5),
+          );
+          expect(
+            contrastRatio(c.textPrimary, c.barTrackStripe),
+            greaterThanOrEqualTo(4.5),
+          );
+        },
+      );
+
       test('outlines are visible on the surface and the background', () {
         expect(contrastRatio(c.outline, c.surface), greaterThanOrEqualTo(3));
         expect(contrastRatio(c.outline, c.background), greaterThanOrEqualTo(3));
