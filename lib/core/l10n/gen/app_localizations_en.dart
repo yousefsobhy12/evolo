@@ -412,4 +412,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allHabitsTitle => 'All habits';
+
+  @override
+  String get statsTitle => 'Progress';
+
+  @override
+  String get statsPeriodWeek => 'This week';
+
+  @override
+  String get statsPeriodMonth => 'This month';
+
+  @override
+  String get statsCompletionRate => 'Completion rate';
+
+  @override
+  String get statsBestStreak => 'Best streak';
+
+  @override
+  String statsBestStreakCaption(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'days (all time)',
+      one: 'day (all time)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get statsTotalCheckIns => 'Total check-ins';
+
+  @override
+  String get statsNoCountedDays => 'No counted days';
+
+  @override
+  String get statsByHabitHeading => 'By habit';
+
+  @override
+  String statsBarSemantics(String habit, String value) {
+    return '$habit: $value';
+  }
 }

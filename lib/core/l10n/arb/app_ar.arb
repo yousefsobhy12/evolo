@@ -114,5 +114,15 @@
     "done": "تم",
     "selectAllDays": "تحديد الكل",
     "seeAll": "عرض الكل",
-    "allHabitsTitle": "كل العادات"
+    "allHabitsTitle": "كل العادات",
+    "statsTitle": "التقدّم",
+    "statsPeriodWeek": "هذا الأسبوع",
+    "statsPeriodMonth": "هذا الشهر",
+    "statsCompletionRate": "نسبة الإنجاز",
+    "statsBestStreak": "أطول سلسلة",
+    "statsBestStreakCaption": "{count, plural, zero{أيام (لكل الوقت)} one{يوم (لكل الوقت)} two{يومان (لكل الوقت)} few{أيام (لكل الوقت)} many{يومًا (لكل الوقت)} other{يوم (لكل الوقت)}}",
+    "statsTotalCheckIns": "مرات الإنجاز",
+    "statsNoCountedDays": "لا أيام محسوبة",
+    "statsByHabitHeading": "حسب العادة",
+    "statsBarSemantics": "{habit}: {value}"
 }

@@ -424,4 +424,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allHabitsTitle => 'كل العادات';
+
+  @override
+  String get statsTitle => 'التقدّم';
+
+  @override
+  String get statsPeriodWeek => 'هذا الأسبوع';
+
+  @override
+  String get statsPeriodMonth => 'هذا الشهر';
+
+  @override
+  String get statsCompletionRate => 'نسبة الإنجاز';
+
+  @override
+  String get statsBestStreak => 'أطول سلسلة';
+
+  @override
+  String statsBestStreakCaption(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يوم (لكل الوقت)',
+      many: 'يومًا (لكل الوقت)',
+      few: 'أيام (لكل الوقت)',
+      two: 'يومان (لكل الوقت)',
+      one: 'يوم (لكل الوقت)',
+      zero: 'أيام (لكل الوقت)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get statsTotalCheckIns => 'مرات الإنجاز';
+
+  @override
+  String get statsNoCountedDays => 'لا أيام محسوبة';
+
+  @override
+  String get statsByHabitHeading => 'حسب العادة';
+
+  @override
+  String statsBarSemantics(String habit, String value) {
+    return '$habit: $value';
+  }
 }

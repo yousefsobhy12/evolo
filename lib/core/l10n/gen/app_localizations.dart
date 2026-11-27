@@ -787,6 +787,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All habits'**
   String get allHabitsTitle;
+
+  /// Title of the statistics screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get statsTitle;
+
+  /// Statistics toggle option: the current week.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get statsPeriodWeek;
+
+  /// Statistics toggle option: the current month.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get statsPeriodMonth;
+
+  /// Label of the share of due days that were completed in the period.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion rate'**
+  String get statsCompletionRate;
+
+  /// Label of the longest streak of any habit.
+  ///
+  /// In en, this message translates to:
+  /// **'Best streak'**
+  String get statsBestStreak;
+
+  /// Unit under the best streak number. It says the number covers all time, not only the selected period.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{day (all time)} other{days (all time)}}'**
+  String statsBestStreakCaption(int count);
+
+  /// Label of how many habit days reached their goal in the period.
+  ///
+  /// In en, this message translates to:
+  /// **'Total check-ins'**
+  String get statsTotalCheckIns;
+
+  /// Spoken in place of the dash shown when a habit has no counted day in the period.
+  ///
+  /// In en, this message translates to:
+  /// **'No counted days'**
+  String get statsNoCountedDays;
+
+  /// Heading above the bars, one bar per habit.
+  ///
+  /// In en, this message translates to:
+  /// **'By habit'**
+  String get statsByHabitHeading;
+
+  /// What a screen reader says for one bar: the habit name and its completion value.
+  ///
+  /// In en, this message translates to:
+  /// **'{habit}: {value}'**
+  String statsBarSemantics(String habit, String value);
 }
 
 class _AppLocalizationsDelegate

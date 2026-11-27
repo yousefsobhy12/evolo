@@ -520,5 +520,58 @@
     "allHabitsTitle": "All habits",
     "@allHabitsTitle": {
         "description": "Title of the screen that lists every habit."
+    },
+    "statsTitle": "Progress",
+    "@statsTitle": {
+        "description": "Title of the statistics screen."
+    },
+    "statsPeriodWeek": "This week",
+    "@statsPeriodWeek": {
+        "description": "Statistics toggle option: the current week."
+    },
+    "statsPeriodMonth": "This month",
+    "@statsPeriodMonth": {
+        "description": "Statistics toggle option: the current month."
+    },
+    "statsCompletionRate": "Completion rate",
+    "@statsCompletionRate": {
+        "description": "Label of the share of due days that were completed in the period."
+    },
+    "statsBestStreak": "Best streak",
+    "@statsBestStreak": {
+        "description": "Label of the longest streak of any habit."
+    },
+    "statsBestStreakCaption": "{count, plural, one{day (all time)} other{days (all time)}}",
+    "@statsBestStreakCaption": {
+        "description": "Unit under the best streak number. It says the number covers all time, not only the selected period.",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statsTotalCheckIns": "Total check-ins",
+    "@statsTotalCheckIns": {
+        "description": "Label of how many habit days reached their goal in the period."
+    },
+    "statsNoCountedDays": "No counted days",
+    "@statsNoCountedDays": {
+        "description": "Spoken in place of the dash shown when a habit has no counted day in the period."
+    },
+    "statsByHabitHeading": "By habit",
+    "@statsByHabitHeading": {
+        "description": "Heading above the bars, one bar per habit."
+    },
+    "statsBarSemantics": "{habit}: {value}",
+    "@statsBarSemantics": {
+        "description": "What a screen reader says for one bar: the habit name and its completion value.",
+        "placeholders": {
+            "habit": {
+                "type": "String"
+            },
+            "value": {
+                "type": "String"
+            }
+        }
     }
 }
