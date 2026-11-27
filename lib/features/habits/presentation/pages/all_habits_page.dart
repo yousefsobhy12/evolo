@@ -43,9 +43,7 @@ class AllHabitsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                BlocBuilder<AllHabitsCubit, AllHabitsState>(
-                  builder: _content,
-                ),
+                BlocBuilder<AllHabitsCubit, AllHabitsState>(builder: _content),
               ],
             ),
           ),

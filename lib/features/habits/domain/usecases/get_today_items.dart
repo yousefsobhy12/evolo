@@ -1,5 +1,6 @@
 import 'package:evolo/core/utils/calendar_day.dart';
 import 'package:evolo/features/habits/domain/entities/completion.dart';
+import 'package:evolo/features/habits/domain/entities/day_progress.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
 import 'package:evolo/features/habits/domain/entities/today_item.dart';
 import 'package:evolo/features/habits/domain/usecases/get_streak_status.dart';
@@ -63,15 +64,17 @@ final class GetTodayItems {
     required CalendarDay day,
     required CalendarDay today,
   }) {
-    final onDay = completions.where((c) => c.day == day).firstOrNull;
-    final target = day == today
-        ? habit.dailyTarget
-        : (onDay?.target ?? habit.dailyTarget);
+    final progress = DayProgress.of(
+      habit: habit,
+      completion: completions.where((c) => c.day == day).firstOrNull,
+      day: day,
+      today: today,
+    );
 
     return TodayItem(
       habit: habit,
-      count: onDay?.count ?? 0,
-      target: target,
+      count: progress.count,
+      target: progress.target,
       streak: _getStreakStatus(
         habit: habit,
         completions: completions,

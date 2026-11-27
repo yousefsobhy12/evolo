@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:evolo/features/habits/domain/entities/day_progress.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
 import 'package:evolo/features/habits/domain/entities/streak_status.dart';
 
@@ -27,7 +28,7 @@ final class TodayItem extends Equatable {
   /// Always as of *today*, whichever day is selected.
   final StreakStatus streak;
 
-  bool get isCompleted => count > 0 && count >= target;
+  bool get isCompleted => DayProgress(count: count, target: target).isCompleted;
 
   /// A habit with a goal above 1 (for example "8 glasses"): it shows a
   /// progress ring and a minus button instead of a plain check circle.

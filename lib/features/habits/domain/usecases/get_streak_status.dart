@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:evolo/core/utils/calendar_day.dart';
 import 'package:evolo/features/habits/domain/entities/completion.dart';
+import 'package:evolo/features/habits/domain/entities/day_progress.dart';
 import 'package:evolo/features/habits/domain/entities/habit.dart';
 import 'package:evolo/features/habits/domain/entities/streak_status.dart';
 import 'package:evolo/features/habits/domain/usecases/is_habit_due.dart';
@@ -50,22 +51,20 @@ final class GetStreakStatus {
     ) {
       if (!_isHabitDue(habit, day)) continue;
 
-      final isToday = day == today;
-      final completion = byDay[day];
-      final target = isToday ? habit.dailyTarget : completion?.target;
-      final isDone =
-          completion != null &&
-          target != null &&
-          completion.count > 0 &&
-          completion.count >= target;
+      final progress = DayProgress.of(
+        habit: habit,
+        completion: byDay[day],
+        day: day,
+        today: today,
+      );
 
-      if (isDone) {
+      if (progress.isCompleted) {
         run++;
         longest = max(longest, run);
         if (run % daysPerFreeze == 0) {
           freezes = min(freezes + 1, maxFreezes);
         }
-      } else if (isToday) {
+      } else if (day == today) {
         todayAtRisk = true;
       } else if (freezes > 0) {
         freezes--;
